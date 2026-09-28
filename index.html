@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gedai — prototipo home v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<style>
+  :root {
+    --navy: #1A2130;      /* Blu Club */
+    --cream: #EDE5DA;     /* Cotone */
+    --paper: #F6F2EC;     /* Carta — fondo chiaro delle sezioni */
+    --white: #FFFFFF;
+    --ink: #0E0E0E;       /* Inchiostro */
+    --signal: #E8551F;    /* Arancio Segnale */
+    --court: #1F4D3A;     /* Verde Campo */
+    --line: rgba(26, 33, 48, .14);
+    --serif: "Bodoni Moda", "Bodoni 72", Didot, serif;
+    --sans: "Inter Tight", system-ui, -apple-system, sans-serif;
+    --gutter: clamp(16px, 2.6vw, 40px);
+    --header-h: 64px;
+    --ease: cubic-bezier(.76, 0, .24, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 15px/1.55 var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  .caps { font: 500 11px/1.3 var(--sans); letter-spacing: .18em; text-transform: uppercase; }
+  .logo { display: block; width: 100%; height: auto; }
+  .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.3; }
+  .link-line { position: relative; }
+  .link-line::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .6s var(--ease); }
+  .link-line:hover::after { transform: scaleX(1); transform-origin: left; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; height: 50px; padding: 0 28px; font: 500 11px/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; border: 1px solid currentColor; position: relative; overflow: hidden; isolation: isolate; transition: color .5s var(--ease); white-space: nowrap; }
+  .btn::before { content: ""; position: absolute; inset: 0; z-index: -1; background: currentColor; transform: translateY(101%); transition: transform .5s var(--ease); }
+  .btn--light { color: var(--cream); }
+  .btn--light:hover { color: var(--navy); }
+  .btn--light:hover::before { background: var(--cream); transform: none; }
+  .btn--solid { background: var(--cream); color: var(--navy); border-color: var(--cream); }
+  .btn--solid::before { background: var(--navy); }
+  .btn--solid:hover { color: var(--cream); }
+  .btn--solid:hover::before { transform: none; }
+  .btn--dark { color: var(--navy); }
+  .btn--dark:hover { color: var(--cream); }
+  .btn--dark:hover::before { background: var(--navy); transform: none; }
+  .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 0 var(--gutter); margin-bottom: clamp(28px, 4vw, 56px); }
+  .section-head h2 { margin: 12px 0 0; font: 400 clamp(40px, 5.4vw, 88px)/.95 var(--serif); letter-spacing: -.02em; color: var(--navy); }
+  .section-head h2 em { font-style: italic; }
+
+  /* ================= Preloader ================= */
+  .loader { position: fixed; inset: 0; z-index: 200; background: var(--navy); color: var(--cream); display: grid; place-items: center; }
+  .loader__logo { width: min(46vw, 420px); clip-path: inset(0 100% 0 0); }
+  .loader__row { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 28px; display: flex; justify-content: space-between; }
+  .loader__count { font: 400 clamp(48px, 7vw, 110px)/.8 var(--serif); font-variant-numeric: tabular-nums; position: absolute; right: var(--gutter); bottom: 64px; }
+
+  /* ================= Announcement + Header ================= */
+  .announce { position: relative; z-index: 60; height: 34px; background: var(--navy); color: var(--cream); display: grid; place-items: center; overflow: hidden; }
+  .announce span { position: absolute; transition: transform .8s var(--ease), opacity .8s; }
+  .announce span:not(.is-on) { transform: translateY(100%); opacity: 0; }
+  .announce span.is-out { transform: translateY(-100%); opacity: 0; }
+
+  .header { position: fixed; top: 34px; left: 0; right: 0; z-index: 70; height: var(--header-h); padding: 0 var(--gutter); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; color: var(--cream);
+            transition: transform .7s var(--ease), background-color .5s, color .5s, top .5s var(--ease); }
+  .header::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; opacity: .18; }
+  .header.is-solid { top: 0; background: rgba(246, 242, 236, .92); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); color: var(--navy); }
+  .header.is-hidden { transform: translateY(-100%); }
+  body.menu-open .header { transform: none; color: var(--cream); background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .header__left, .header__right { display: flex; align-items: center; gap: 28px; }
+  .header__right { justify-content: flex-end; gap: 22px; }
+  .header__logo { width: 104px; transition: width .5s var(--ease); }
+  .header.is-solid .header__logo { width: 88px; }
+  .burger { display: inline-flex; align-items: center; gap: 12px; height: 40px; }
+  .burger__lines { position: relative; width: 26px; height: 10px; }
+  .burger__lines i { position: absolute; left: 0; height: 1.3px; background: currentColor; transition: transform .6s var(--ease), width .6s var(--ease), top .6s var(--ease); }
+  .burger__lines i:nth-child(1) { top: 0; width: 26px; }
+  .burger__lines i:nth-child(2) { top: 8px; width: 16px; }
+  .burger:hover .burger__lines i:nth-child(2) { width: 26px; }
+  body.menu-open .burger__lines i:nth-child(1) { top: 4px; transform: rotate(45deg); }
+  body.menu-open .burger__lines i:nth-child(2) { top: 4px; width: 26px; transform: rotate(-45deg); }
+  .burger__label { position: relative; height: 14px; overflow: hidden; display: inline-block; }
+  .burger__label span { display: block; transition: transform .6s var(--ease); }
+  body.menu-open .burger__label span { transform: translateY(-100%); }
+  .bag { position: relative; display: inline-flex; }
+  .bag b { position: absolute; top: -6px; right: -9px; min-width: 16px; height: 16px; border-radius: 8px; background: var(--signal); color: #fff; font: 600 9px/16px var(--sans); text-align: center; }
+
+  /* ================= Menu a tutto schermo ================= */
+  .menu { position: fixed; inset: 0; z-index: 65; display: grid; grid-template-columns: 1.15fr 1fr; background: var(--navy); color: var(--cream); visibility: hidden; clip-path: inset(0 0 100% 0); }
+  .menu__nav { display: flex; flex-direction: column; justify-content: space-between; gap: 32px; padding: calc(34px + var(--header-h) + 5vh) var(--gutter) 32px; overflow-y: auto; }
+  .menu__list { list-style: none; margin: 0; padding: 0; }
+  .menu__list li { overflow: hidden; }
+  .menu__list a { display: flex; align-items: baseline; gap: 18px; padding: .06em 0; font: 400 clamp(40px, 5.4vw, 86px)/1.04 var(--serif); letter-spacing: -.02em; transition: opacity .4s, transform .6s var(--ease); }
+  .menu__list a sup { font: 500 10px var(--sans); letter-spacing: .18em; opacity: .5; transform: translateY(-1.6em); }
+  .menu__list:hover a { opacity: .32; }
+  .menu__list a:hover { opacity: 1; transform: translateX(14px); font-style: italic; }
+  .menu__foot { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 12px 48px; border-top: 1px solid rgba(237,229,218,.18); padding-top: 22px; }
+  .menu__foot div { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .menu__foot .caps { opacity: .5; margin-bottom: 4px; }
+  .menu__media { position: relative; overflow: hidden; }
+  .menu__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.12); transition: opacity .8s var(--ease), transform 1.4s var(--ease); }
+  .menu__media img.is-on { opacity: 1; transform: scale(1); }
+  .menu__caption { position: absolute; left: 24px; bottom: 24px; z-index: 2; color: var(--cream); }
+
+  /* ================= Hero slideshow ================= */
+  .hero { position: relative; height: 100vh; height: 100svh; min-height: 620px; overflow: hidden; background: var(--ink); color: var(--cream); }
+  .slide { position: absolute; inset: 0; z-index: 1; clip-path: inset(100% 0 0 0); overflow: hidden; }
+  .slide.is-active { clip-path: inset(0 0 0 0); z-index: 2; }
+  .slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .slide::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,12,18,.62) 0%, rgba(10,12,18,.08) 45%, rgba(10,12,18,.3) 100%); }
+  .hero__content { position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(96px, 14vh, 150px); z-index: 5; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 32px; }
+  .hero__title { margin: 14px 0 0; font: 400 clamp(56px, 9.4vw, 168px)/.9 var(--serif); letter-spacing: -.035em; }
+  .hero__title em { font-style: italic; }
+  .hero__ctas { display: flex; gap: 12px; }
+  .hero__bar { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 28px; z-index: 5; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .hero__bar button { text-align: left; padding-top: 12px; position: relative; opacity: .55; transition: opacity .4s; }
+  .hero__bar button.is-active { opacity: 1; }
+  .hero__bar button::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: rgba(237,229,218,.3); }
+  .hero__bar button i { position: absolute; top: 0; left: 0; height: 1px; width: 100%; background: var(--cream); transform: scaleX(0); transform-origin: left; }
+  .hero__text { display: none; }
+  .hero__text.is-active { display: block; }
+
+  /* ================= Marquee ================= */
+  .marquee { overflow: hidden; border-bottom: 1px solid var(--line); background: var(--paper); color: var(--navy); padding: 20px 0; }
+  .marquee__track { display: flex; width: max-content; animation: marquee 40s linear infinite; }
+  .marquee__track span { display: flex; align-items: center; gap: 36px; padding-right: 36px; white-space: nowrap; font: italic 400 clamp(22px, 2.4vw, 34px)/1 var(--serif); }
+  .marquee__track svg { width: 10px; height: 10px; fill: var(--signal); }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* ================= Manifesto ================= */
+  .manifesto { padding: clamp(96px, 14vw, 200px) var(--gutter); display: grid; grid-template-columns: 1fr 3fr; gap: 32px; }
+  .manifesto__text { margin: 0; font: 400 clamp(30px, 3.9vw, 64px)/1.12 var(--serif); letter-spacing: -.015em; color: var(--navy); }
+  .manifesto__text em { font-style: italic; }
+  .pill { display: inline-block; width: 1.9em; height: .95em; border-radius: 1em; overflow: hidden; vertical-align: -.08em; margin: 0 .08em; }
+  .pill img { width: 100%; height: 100%; object-fit: cover; }
+  .manifesto__foot { grid-column: 2; display: flex; gap: 40px; align-items: center; margin-top: 40px; }
+
+  /* ================= Categorie ================= */
+  .cats { padding: 0 0 clamp(96px, 12vw, 180px); }
+  .cats__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 var(--gutter); }
+  .cat { position: relative; aspect-ratio: 3 / 4.4; overflow: hidden; color: var(--cream); }
+  .cat img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease); }
+  .cat::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,12,18,.55), transparent 50%); }
+  .cat:hover img { transform: scale(1.06); }
+  .cat__label { position: absolute; left: 20px; right: 20px; bottom: 20px; z-index: 2; display: flex; justify-content: space-between; align-items: end; }
+  .cat__label h3 { margin: 0; font: 400 clamp(26px, 2.6vw, 40px)/1 var(--serif); }
+  .cat__label .caps { transform: translateY(8px); opacity: 0; transition: .6s var(--ease); }
+  .cat:hover .cat__label .caps { transform: none; opacity: 1; }
+
+  /* ================= Nuovi arrivi ================= */
+  .arrivals { padding: 0 0 clamp(96px, 12vw, 180px); }
+  .arrivals__nav { display: flex; gap: 8px; }
+  .arrivals__nav button { width: 50px; height: 50px; border: 1px solid var(--line); display: grid; place-items: center; transition: background .4s, color .4s; }
+  .arrivals__nav button:hover { background: var(--navy); color: var(--cream); }
+  .track { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 2 * var(--gutter) - 3 * 12px) / 4.25); gap: 12px; padding: 0 var(--gutter); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 var(--gutter); scrollbar-width: none; cursor: grab; }
+  .track::-webkit-scrollbar { display: none; }
+  .track.is-drag { cursor: grabbing; scroll-snap-type: none; }
+  .track.is-drag * { pointer-events: none; }
+  .progress { margin: 32px var(--gutter) 0; height: 1px; background: var(--line); position: relative; }
+  .progress i { position: absolute; top: -.5px; left: 0; height: 2px; background: var(--navy); width: 25%; transition: left .2s; }
+  .card { scroll-snap-align: start; user-select: none; }
+  .card__media { position: relative; display: block; aspect-ratio: 3 / 4; overflow: hidden; background: #ebe6de; }
+  .card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .7s var(--ease), transform 1.4s var(--ease); -webkit-user-drag: none; }
+  .card__media img + img { opacity: 0; }
+  .card:hover .card__media img + img { opacity: 1; }
+  .card:hover .card__media img { transform: scale(1.04); }
+  .card__tag { position: absolute; top: 12px; left: 12px; z-index: 2; padding: 6px 9px; background: var(--paper); color: var(--navy); }
+  .card__tag.hot { background: var(--signal); color: #fff; }
+  .card__quick { position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 2; background: rgba(246,242,236,.94); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 12px; transform: translateY(calc(100% + 12px)); transition: transform .6s var(--ease); }
+  .card:hover .card__quick { transform: none; }
+  .card__quick .caps { display: block; margin-bottom: 10px; color: #666; }
+  .card__sizes { display: flex; gap: 6px; }
+  .card__sizes button { flex: 1; height: 34px; border: 1px solid var(--line); font: 500 11px var(--sans); position: relative; transition: background .3s, color .3s; }
+  .card__sizes button:hover:not([disabled]) { background: var(--navy); color: var(--cream); }
+  .card__sizes button[disabled] { color: #b5b0a8; background: linear-gradient(to top right, transparent calc(50% - .5px), #c9c3ba 50%, transparent calc(50% + .5px)); cursor: default; }
+  .card__sizes button.low::after { content: ""; position: absolute; top: 4px; right: 4px; width: 4px; height: 4px; border-radius: 50%; background: var(--signal); }
+  .card__info { display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .card__info h3 { margin: 0; font: 500 14px/1.3 var(--sans); }
+  .card__info p { margin: 3px 0 0; color: #7a756d; font-size: 13px; }
+  .swatches { display: flex; gap: 8px; margin-top: 10px; }
+  .swatches i { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+  .swatches i:first-child { outline: 1px solid var(--navy); outline-offset: 2px; }
+
+  /* ================= Campagna orizzontale ================= */
+  .campaign { background: var(--navy); color: var(--cream); overflow: hidden; }
+  .campaign__pin { height: 100vh; height: 100svh; display: flex; align-items: center; }
+  .campaign__track { display: flex; align-items: center; gap: clamp(24px, 4vw, 72px); padding: 0 var(--gutter); will-change: transform; }
+  .campaign__intro { flex: 0 0 clamp(300px, 34vw, 560px); }
+  .campaign__intro h2 { margin: 16px 0 24px; font: 400 clamp(52px, 7vw, 120px)/.92 var(--serif); letter-spacing: -.03em; }
+  .campaign__intro h2 em { font-style: italic; }
+  .campaign__intro p { max-width: 38ch; opacity: .75; margin: 0 0 32px; }
+  .shot { flex: 0 0 auto; margin: 0; display: flex; flex-direction: column; }
+  .shot__img { flex: 1; overflow: hidden; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; }
+  .shot figcaption { display: flex; justify-content: space-between; margin-top: 12px; opacity: .7; }
+  .shot--a { width: clamp(260px, 26vw, 440px); height: 62vh; }
+  .shot--b { width: clamp(300px, 40vw, 680px); height: 48vh; align-self: flex-start; margin-top: 14vh; }
+  .shot--c { width: clamp(220px, 20vw, 340px); height: 40vh; align-self: flex-end; margin-bottom: 14vh; }
+  .shot--d { width: clamp(260px, 30vw, 520px); height: 70vh; }
+  .campaign__end { flex: 0 0 clamp(280px, 28vw, 440px); font: italic 400 clamp(36px, 4vw, 64px)/1 var(--serif); }
+  .campaign__end .btn { margin-top: 28px; }
+
+  /* ================= La sartoria ================= */
+  .atelier { display: grid; grid-template-columns: 1fr 1fr; background: var(--paper); }
+  .atelier__sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  .atelier__sticky img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); transition: opacity 1s var(--ease), transform 1.6s var(--ease); }
+  .atelier__sticky img.is-on { opacity: 1; transform: none; }
+  .atelier__steps { padding: 0 var(--gutter); }
+  .step { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; max-width: 520px; margin-left: clamp(0px, 5vw, 80px); border-bottom: 1px solid var(--line); }
+  .step:last-child { border-bottom: 0; }
+  .step__no { font: italic 400 clamp(64px, 8vw, 130px)/1 var(--serif); color: var(--signal); margin-top: 18px; }
+  .step h3 { margin: 16px 0; font: 400 clamp(34px, 3.6vw, 56px)/1 var(--serif); color: var(--navy); }
+  .step h3 em { font-style: italic; }
+  .step p { margin: 0; color: #4d4a45; max-width: 44ch; }
+  .step__img { display: none; }
+
+  /* ================= Streetwear a tutto schermo ================= */
+  .street { position: relative; height: 120vh; overflow: hidden; color: var(--cream); display: grid; place-items: center; text-align: center; }
+  .street img { position: absolute; left: 0; top: -10%; width: 100%; height: 120%; object-fit: cover; }
+  .street::after { content: ""; position: absolute; inset: 0; background: rgba(10,12,18,.32); }
+  .street__inner { position: relative; z-index: 2; padding: 0 var(--gutter); }
+  .street h2 { margin: 18px 0 36px; font: 400 clamp(56px, 10vw, 180px)/.88 var(--serif); letter-spacing: -.035em; }
+  .street h2 em { font-style: italic; }
+
+  /* ================= Il Club ================= */
+  .club { position: relative; overflow: hidden; background: var(--court); color: var(--cream); padding: clamp(96px, 12vw, 180px) var(--gutter); display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: end; }
+  .club__bg { position: absolute; right: -6vw; bottom: -8vw; width: 70vw; color: rgba(237,229,218,.07); pointer-events: none; }
+  .club h2 { position: relative; margin: 16px 0 0; font: 400 clamp(52px, 7vw, 120px)/.92 var(--serif); letter-spacing: -.03em; }
+  .club h2 em { font-style: italic; }
+  .club__perks { position: relative; list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 12px; }
+  .club__perks li { display: flex; gap: 14px; align-items: baseline; }
+  .club__perks li::before { content: "✦"; color: var(--signal); font-size: 10px; }
+  .club__form { position: relative; }
+  .field { display: flex; border-bottom: 1px solid rgba(237,229,218,.5); }
+  .field input { flex: 1; min-width: 0; height: 58px; background: none; border: 0; outline: 0; color: var(--cream); font: 400 18px var(--sans); }
+  .field input::placeholder { color: rgba(237,229,218,.55); }
+  .field button { padding: 0 4px 0 18px; }
+  .club__legal { margin-top: 14px; opacity: .6; font-size: 12px; }
+
+  /* ================= Community ================= */
+  .community { padding: clamp(96px, 12vw, 180px) 0; }
+  .community__grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 0 var(--gutter); }
+  .community__grid a { position: relative; aspect-ratio: 1; overflow: hidden; }
+  .community__grid img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease), filter .6s; }
+  .community__grid a:hover img { transform: scale(1.06); filter: brightness(.8); }
+
+  /* ================= Footer ================= */
+  .footer { background: var(--navy); color: var(--cream); padding: clamp(64px, 8vw, 120px) var(--gutter) 0; overflow: hidden; }
+  .footer__top { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 40px; padding-bottom: 64px; border-bottom: 1px solid rgba(237,229,218,.16); }
+  .footer__news h3 { margin: 0 0 24px; font: 400 clamp(30px, 3vw, 46px)/1.05 var(--serif); }
+  .footer__news h3 em { font-style: italic; }
+  .footer__col h4 { margin: 0 0 18px; opacity: .5; }
+  .footer__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .footer__mid { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; padding: 28px 0; border-bottom: 1px solid rgba(237,229,218,.16); }
+  .footer__social, .footer__pay, .footer__locale { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+  .footer__pay { gap: 8px; }
+  .footer__pay span { padding: 6px 10px; border: 1px solid rgba(237,229,218,.25); border-radius: 4px; font: 600 10px/1 var(--sans); letter-spacing: .06em; }
+  .footer__legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; padding: 22px 0; opacity: .6; font-size: 12px; }
+  .footer__legal nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+  .footer__mark { width: 100%; margin: 12px 0 -4.5vw; color: var(--cream); }
+
+  /* ================= Cursore ================= */
+  .cursor { position: fixed; top: 0; left: 0; z-index: 300; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--cream); mix-blend-mode: difference; pointer-events: none; display: grid; place-items: center; opacity: 0; transition: width .5s var(--ease), height .5s var(--ease), margin .5s var(--ease), opacity .3s; }
+  .cursor.is-live { opacity: 1; }
+  .cursor span { font: 500 10px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--navy); opacity: 0; transition: opacity .3s; }
+  .cursor.is-big { width: 92px; height: 92px; margin: -46px 0 0 -46px; mix-blend-mode: normal; }
+  .cursor.is-big span { opacity: 1; }
+  @media (hover: none), (pointer: coarse) { .cursor { display: none; } }
+
+  /* ================= Tablet ================= */
+  @media (max-width: 1024px) {
+    .hide-tab { display: none; }
+    .menu { grid-template-columns: 1fr; }
+    .menu__media { display: none; }
+    .manifesto { grid-template-columns: 1fr; }
+    .manifesto__foot { grid-column: 1; }
+    .cats__grid { grid-template-columns: repeat(2, 1fr); }
+    .track { grid-auto-columns: calc((100% - 2 * var(--gutter) - 12px) / 2.3); }
+    .footer__top { grid-template-columns: repeat(2, 1fr); }
+    .footer__news { grid-column: 1 / -1; }
+    .community__grid { grid-template-columns: repeat(3, 1fr); }
+    .campaign__pin { height: auto; padding: 96px 0; }
+    .campaign__track { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; width: 100%; }
+    .campaign__track::-webkit-scrollbar { display: none; }
+    .campaign__track > * { scroll-snap-align: start; }
+    .shot--a, .shot--b, .shot--c, .shot--d { height: 56vh; margin: 0; align-self: center; }
+    .atelier { grid-template-columns: 1fr; }
+    .atelier__sticky { display: none; }
+    .step { min-height: 0; padding: 72px 0; margin: 0; max-width: none; }
+    .step__img { display: block; aspect-ratio: 4 / 3; object-fit: cover; width: 100%; margin-bottom: 28px; }
+  }
+
+  /* ================= Telefono ================= */
+  @media (max-width: 767px) {
+    :root { --header-h: 56px; }
+    body { font-size: 14px; }
+    .hide-mob { display: none; }
+    .header__right { gap: 18px; }
+    .header__logo { width: 84px; }
+    .header.is-solid .header__logo { width: 76px; }
+    .burger__label { display: none; }
+    .menu__list a { font-size: 46px; }
+    .menu__foot { grid-template-columns: 1fr 1fr; }
+    .hero { min-height: 560px; }
+    .hero__content { grid-template-columns: 1fr; bottom: 84px; gap: 24px; }
+    .hero__title { font-size: 62px; }
+    .hero__ctas { flex-direction: column; }
+    .hero__ctas .btn { width: 100%; }
+    .hero__bar { gap: 10px; }
+    .hero__bar .caps { font-size: 9px; letter-spacing: .1em; }
+    .hero__bar .long { display: none; }
+    .section-head { flex-direction: column; align-items: start; }
+    .arrivals__nav { display: none; }
+    .track { grid-auto-columns: 74%; }
+    .cats__grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 72%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .cats__grid::-webkit-scrollbar { display: none; }
+    .cat { scroll-snap-align: start; }
+    .cat__label .caps { opacity: 1; transform: none; }
+    .card__quick { display: none; }
+    .shot--a, .shot--b, .shot--c, .shot--d { width: 78vw; height: 58vh; }
+    .campaign__intro, .campaign__end { flex-basis: 84vw; }
+    .street { height: 90vh; }
+    .club { grid-template-columns: 1fr; }
+    .community__grid { gap: 4px; }
+    .footer__top { grid-template-columns: 1fr 1fr; gap: 36px 20px; }
+    .footer__mid { flex-direction: column; align-items: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+    .loader { display: none; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="gedai" viewBox="0 0 4846 2533"><g transform="translate(0.000000,2533.000000) scale(0.100000,-0.100000)" fill="currentColor"><path d="M20495 24923 c-501 -20 -1153 -91 -1490 -163 -126 -27 -320 -67 -430 -89 -998 -200 -2323 -704 -3655 -1391 -454 -234 -574 -299 -1258 -687 -794 -450 -1883 -1187 -2492 -1687 -485 -397 -610 -502 -825 -686 -237 -204 -291 -253 -595 -539 -86 -80 -241 -225 -345 -322 -244 -225 -699 -695 -886 -914 -80 -93 -205 -235 -279 -315 -543 -590 -1201 -1464 -1732 -2300 -175 -275 -306 -334 -608 -271 -1814 377 -2829 1395 -2867 2876 -14 520 200 1281 559 1987 208 410 691 1023 1103 1401 1042 954 2520 1787 3598 2027 100 22 255 61 343 85 89 25 255 63 370 85 411 79 485 103 539 174 87 114 -13 221 -204 219 -208 -1 -922 -91 -1137 -143 -71 -17 -212 -51 -314 -75 -102 -24 -264 -68 -360 -98 -96 -30 -222 -70 -280 -87 -271 -82 -979 -376 -1441 -597 -909 -435 -1724 -1024 -2334 -1687 -329 -358 -456 -516 -723 -901 -630 -910 -858 -1828 -716 -2895 106 -802 697 -1588 1591 -2119 455 -270 1319 -579 1833 -656 514 -77 574 -166 386 -577 -264 -578 -421 -1170 -501 -1888 -28 -250 -11 -717 36 -998 184 -1109 1013 -1919 2230 -2181 223 -47 862 -75 1189 -51 398 29 1079 152 1430 259 91 27 217 64 280 81 743 202 1512 537 2154 939 658 412 906 525 906 413 0 -81 -348 -608 -664 -1006 -82 -105 -269 -348 -415 -542 -1048 -1389 -1220 -1609 -1324 -1696 -145 -120 -339 -173 -1027 -278 -327 -50 -789 -138 -1180 -225 -107 -24 -319 -66 -470 -95 -151 -28 -347 -67 -435 -85 -88 -19 -281 -57 -430 -84 -148 -28 -337 -67 -420 -86 -82 -20 -244 -56 -360 -80 -753 -160 -1866 -508 -2480 -775 -1446 -630 -2314 -1198 -3048 -1995 -526 -571 -765 -1048 -891 -1780 -55 -315 29 -855 172 -1115 410 -746 1251 -1016 2702 -869 622 63 1661 409 2455 818 480 247 1275 707 1520 880 61 42 225 157 365 256 509 357 627 452 1514 1224 692 601 1687 1646 2229 2340 84 107 229 289 323 405 94 116 219 274 279 351 60 77 156 196 213 265 57 69 164 204 237 300 258 339 346 400 745 515 348 101 921 308 1194 432 67 30 234 104 371 165 373 163 975 479 1290 676 198 124 270 149 335 115 71 -37 74 -54 81 -373 13 -563 166 -909 522 -1178 374 -284 778 -373 1542 -341 280 11 277 11 945 173 446 109 1176 461 2010 969 214 131 669 457 999 716 179 141 265 179 333 147 78 -37 88 -99 52 -343 -122 -822 139 -1348 770 -1558 286 -95 500 -96 858 -6 733 187 1257 482 2262 1279 468 370 567 369 515 -4 -40 -295 -36 -576 13 -733 127 -412 612 -667 1108 -582 889 151 1765 609 2861 1497 396 321 444 349 523 311 73 -34 85 -103 61 -347 -77 -764 228 -1274 864 -1444 496 -133 1119 40 1901 527 363 226 872 582 1140 797 416 334 496 315 445 -100 -85 -683 197 -1110 799 -1215 334 -58 787 51 1421 343 352 161 481 237 1120 657 77 51 248 173 380 272 734 548 744 555 817 568 95 18 107 -55 54 -326 -117 -588 -53 -937 222 -1216 209 -212 496 -322 807 -310 667 28 1388 294 2113 780 253 170 374 266 1012 797 393 327 1333 1280 1517 1537 131 184 98 349 -68 345 -102 -2 -142 -34 -504 -398 -770 -775 -1378 -1332 -1812 -1658 -1116 -837 -1977 -1060 -2134 -552 -99 318 340 1136 1108 2062 77 93 211 259 298 369 87 110 220 277 296 370 160 198 538 673 792 996 178 227 459 564 723 867 78 89 231 271 340 404 110 133 248 301 307 372 229 277 273 395 194 514 -67 103 -174 122 -665 122 -651 0 -682 -12 -995 -395 -72 -88 -199 -241 -282 -340 -83 -99 -198 -238 -255 -310 -159 -197 -727 -879 -968 -1160 -247 -289 -406 -484 -694 -855 -261 -336 -332 -416 -574 -641 -109 -101 -273 -254 -365 -341 -599 -560 -1760 -1458 -2379 -1840 -319 -197 -720 -381 -923 -424 -367 -77 -595 134 -511 472 73 291 573 1033 1294 1919 103 127 243 302 311 390 135 175 542 685 623 780 28 33 121 141 207 240 85 99 220 259 299 355 79 96 223 267 320 380 97 113 220 259 275 325 54 66 162 194 239 284 527 615 686 830 686 928 0 175 -57 191 -665 195 -640 4 -644 3 -946 -349 -393 -456 -473 -472 -659 -128 -179 332 -425 500 -860 587 -279 56 -874 15 -1225 -84 -1303 -366 -2870 -1417 -3951 -2648 -372 -424 -558 -658 -731 -922 -225 -343 -288 -417 -573 -667 -85 -74 -211 -188 -280 -251 -299 -276 -493 -442 -745 -636 -1447 -1117 -2304 -1460 -2531 -1013 -126 250 71 712 606 1414 59 77 166 223 240 323 145 202 311 414 460 592 53 63 156 194 230 290 173 226 443 561 661 820 95 113 297 354 448 535 316 380 387 462 641 750 223 253 306 350 475 560 174 215 502 609 646 775 163 188 430 502 797 938 172 204 374 440 448 524 268 304 716 828 1066 1249 163 195 389 462 504 594 115 132 261 301 323 375 63 74 181 209 261 300 81 91 243 282 360 425 117 143 288 346 380 450 188 215 609 712 936 1105 122 146 304 360 405 475 333 380 369 473 231 597 -78 71 -97 73 -612 73 -635 0 -646 -4 -962 -387 -257 -311 -593 -714 -677 -813 -48 -55 -181 -217 -298 -360 -116 -143 -269 -328 -340 -410 -442 -518 -752 -878 -1048 -1220 -185 -214 -441 -516 -569 -669 -127 -154 -291 -350 -364 -435 -74 -86 -230 -268 -347 -406 -117 -137 -270 -315 -341 -395 -158 -178 -245 -281 -401 -475 -130 -163 -194 -237 -409 -481 -123 -139 -264 -303 -754 -874 -130 -152 -262 -308 -494 -583 -322 -382 -397 -389 -565 -46 -195 398 -572 590 -1211 616 -818 33 -2089 -402 -2926 -1003 -798 -573 -1379 -1097 -1994 -1799 -321 -366 -425 -498 -635 -810 -250 -369 -463 -582 -1075 -1074 -214 -172 -577 -423 -908 -628 -87 -53 -274 -172 -417 -263 -463 -297 -633 -391 -1005 -553 -393 -170 -536 -220 -950 -331 -1311 -349 -1829 130 -1410 1304 186 518 356 782 575 891 87 43 93 45 594 155 190 41 417 97 505 124 89 26 233 69 321 95 324 95 661 227 1325 518 971 425 1813 1048 2186 1617 506 772 441 1396 -171 1641 -578 231 -1749 -11 -2849 -588 -453 -238 -667 -378 -1021 -669 -93 -77 -228 -186 -300 -244 -158 -127 -220 -179 -400 -340 -77 -69 -200 -179 -273 -244 -486 -435 -1074 -1161 -1421 -1756 -241 -412 -295 -467 -741 -746 -971 -609 -1417 -848 -2045 -1097 -538 -214 -725 -227 -725 -50 0 85 36 141 400 628 460 615 874 1193 1399 1953 90 130 279 392 421 582 141 190 326 440 410 555 955 1307 1668 2140 2340 2736 280 249 333 319 334 444 3 231 -246 285 -637 136 -723 -275 -1210 -640 -2237 -1677 -947 -955 -2079 -1876 -2954 -2404 -89 -53 -235 -144 -326 -202 -972 -622 -2462 -1206 -3285 -1287 -1162 -116 -1919 114 -2348 712 -271 377 -353 926 -247 1649 89 604 675 2050 949 2341 117 125 196 147 616 172 311 18 518 36 880 75 149 16 317 31 375 35 347 21 610 55 925 119 121 24 288 54 370 66 256 36 433 68 610 109 94 22 241 53 328 71 86 17 230 51 318 76 88 24 238 62 332 84 168 40 458 123 827 240 102 32 248 77 326 99 348 100 967 330 1599 596 1279 537 1958 867 2975 1448 1574 899 2780 1858 3691 2937 702 831 989 1349 1149 2075 77 349 56 664 -66 1030 -226 677 -1136 1059 -2399 1008z m735 -512 c714 -94 1067 -319 1220 -779 176 -532 -187 -1444 -915 -2292 -559 -652 -1691 -1651 -2488 -2194 -1307 -893 -2825 -1723 -4102 -2243 -897 -366 -1019 -411 -1675 -623 -612 -198 -780 -249 -961 -289 -96 -22 -268 -66 -384 -99 -115 -34 -262 -72 -325 -86 -473 -104 -623 -134 -928 -187 -495 -86 -559 -95 -926 -129 -181 -16 -422 -43 -535 -59 -904 -130 -1123 -35 -851 369 150 223 406 570 594 805 472 591 1534 1752 1997 2185 79 74 254 243 389 375 135 132 312 297 395 365 82 69 253 217 380 329 514 456 1176 976 1990 1566 329 238 1306 885 1680 1113 618 376 2175 1141 2790 1370 736 274 1107 377 1784 492 260 44 585 48 871 11z m8345 -10585 c386 -106 516 -516 335 -1058 -59 -175 -129 -285 -391 -614 -101 -127 -268 -339 -371 -470 -401 -513 -525 -655 -1088 -1240 -720 -748 -1098 -1088 -1785 -1602 -1249 -935 -2065 -1111 -2200 -476 -51 242 35 557 290 1059 185 365 236 443 659 1015 391 529 447 597 972 1180 937 1039 2176 1966 2909 2175 199 56 523 71 670 31z m-6778 -12 c260 -67 311 -316 132 -643 -536 -978 -1995 -1955 -3554 -2380 -314 -86 -415 -70 -415 67 0 235 1036 1362 1849 2011 948 757 1571 1053 1988 945z m15768 1 c388 -104 505 -489 315 -1030 -74 -211 -131 -303 -419 -672 -1288 -1651 -2712 -3022 -3931 -3786 -609 -382 -1143 -472 -1370 -231 -175 185 -178 433 -12 839 248 609 471 965 1087 1735 873 1094 1532 1751 2460 2456 664 505 1462 799 1870 689z m-28203 -6692 c74 -42 84 -123 28 -232 -76 -151 -687 -913 -1056 -1316 -75 -82 -198 -220 -273 -305 -75 -85 -187 -211 -250 -280 -63 -69 -168 -188 -235 -265 -373 -433 -484 -549 -1021 -1056 -352 -332 -428 -399 -834 -728 -168 -135 -357 -289 -420 -342 -566 -467 -826 -649 -1466 -1024 -489 -287 -1162 -554 -1562 -620 -87 -14 -248 -43 -358 -63 -529 -97 -1193 19 -1522 267 -616 464 -597 1328 47 2190 585 782 1101 1204 2340 1911 548 313 965 505 1530 705 113 40 243 87 290 104 97 35 520 167 750 235 85 25 182 55 215 66 67 24 676 180 940 241 93 22 253 64 355 94 234 68 265 75 549 125 129 22 309 58 401 80 91 21 247 53 346 70 98 17 269 48 379 70 165 31 434 73 605 94 75 9 189 -2 222 -21z M47160 17456 c-1045 -232 -1320 -1687 -344 -1817 644 -85 1365 656 1230 1265 -90 404 -474 643 -886 552z"/></g></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M4.5 8h15l-1 13h-13z"/><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 10 10"><path d="M5 0 6 4 10 5 6 6 5 10 4 6 0 5 4 4z"/></symbol>
+</svg>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <svg viewBox="0 0 4846 2533" class="logo loader__logo"><use href="#gedai"/></svg>
+  <div class="loader__count" id="loaderCount">00</div>
+  <div class="loader__row caps"><span>Est. 2023</span><span>Made in Italy</span></div>
+</div>
+
+<div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
+
+<div class="announce caps" aria-live="polite">
+  <span class="is-on">Spedizione gratuita sopra 250 €</span>
+  <span>Made in Italy — Cotone italiano</span>
+  <span>Drop 01 — Edizione numerata, disponibile ora</span>
+</div>
+
+<header class="header" id="header">
+  <div class="header__left caps">
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="menu">
+      <span class="burger__lines"><i></i><i></i></span>
+      <span class="burger__label"><span>Menu</span><span>Chiudi</span></span>
+    </button>
+    <a href="#arrivals" class="link-line hide-tab">Nuovi arrivi</a>
+    <a href="#club" class="link-line hide-tab">Il Club</a>
+  </div>
+  <a href="#hero" aria-label="Gedai, home"><svg viewBox="0 0 4846 2533" class="logo header__logo" role="img" aria-label="Gedai"><use href="#gedai"/></svg></a>
+  <div class="header__right caps">
+    <a href="#" class="link-line hide-mob">Italia (€)</a>
+    <a href="#" aria-label="Cerca"><svg class="icon"><use href="#i-search"/></svg></a>
+    <a href="#" aria-label="Account" class="hide-mob"><svg class="icon"><use href="#i-user"/></svg></a>
+    <a href="#" aria-label="Borsa, 2 articoli" class="bag"><svg class="icon"><use href="#i-bag"/></svg><b>2</b></a>
+  </div>
+</header>
+
+<nav class="menu" id="menu" aria-label="Menu principale">
+  <div class="menu__nav">
+    <ul class="menu__list" id="menuList">
+      <li><a href="#arrivals" data-img="photo-1788500304864-724658f3e260" data-cap="Nuovi arrivi — Drop 01">Nuovi arrivi <sup>01</sup></a></li>
+      <li><a href="#cats" data-img="photo-1591879468972-68d53647238c" data-cap="Uomo — Tutto il guardaroba">Uomo <sup>02</sup></a></li>
+      <li><a href="#campaign" data-img="photo-1592919505780-303950717480" data-cap="Collezione 01 — Country Club">Collezioni <sup>03</sup></a></li>
+      <li><a href="#club" data-img="photo-1681741099751-cb27e0ab97a1" data-cap="Il Club — Membri dal 2023">Il Club <sup>04</sup></a></li>
+      <li><a href="#atelier" data-img="photo-1618866903271-595806e0679d" data-cap="La Sartoria — Cucito in Italia">La Sartoria <sup>05</sup></a></li>
+      <li><a href="#community" data-img="photo-1682717188036-83bc63ccccc7" data-cap="Journal — Storie dal green">Journal <sup>06</sup></a></li>
+    </ul>
+    <div class="menu__foot">
+      <div><span class="caps">Assistenza</span><a href="#" class="link-line">Spedizioni e resi</a><a href="#" class="link-line">Guida alle taglie</a><a href="#" class="link-line">Contatti</a></div>
+      <div><span class="caps">Seguici</span><a href="#" class="link-line">Instagram</a><a href="#" class="link-line">TikTok</a></div>
+      <div><span class="caps">Account</span><a href="#" class="link-line">Accedi</a><a href="#" class="link-line">Italia (€) · IT / EN</a></div>
+    </div>
+  </div>
+  <div class="menu__media" id="menuMedia" aria-hidden="true">
+    <div class="menu__caption caps" id="menuCap"></div>
+  </div>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="hero" aria-roledescription="carosello" aria-label="Campagna Gedai">
+    <div class="slide is-active" data-cursor="Scopri"><img src="https://images.unsplash.com/photo-1696104470342-b1ed3afe8381?w=2200&q=80" alt="Golfista al tramonto su un green" fetchpriority="high"></div>
+    <div class="slide" data-cursor="Scopri"><img src="https://images.unsplash.com/photo-1684283377169-e3dcfec7790c?w=2200&q=80" alt="Ragazzo con giacca streetwear in città"></div>
+    <div class="slide" data-cursor="Scopri"><img src="https://images.unsplash.com/photo-1610419965999-ff462f0c27f2?w=2200&q=80" alt="Gilet sartoriale nero su camicia bianca"></div>
+    <div class="hero__content">
+      <div>
+        <div class="hero__text is-active"><div class="caps">Collezione 01 — Autunno / Inverno 2026</div><h1 class="hero__title">Il Club<br>è <em>aperto.</em></h1></div>
+        <div class="hero__text"><div class="caps">Streetwear — Capsule urbana</div><h2 class="hero__title">Dal green<br><em>alla strada.</em></h2></div>
+        <div class="hero__text"><div class="caps">Sartoria — Made in Italy</div><h2 class="hero__title">Cucito<br><em>in Italia.</em></h2></div>
+      </div>
+      <div class="hero__ctas">
+        <a href="#arrivals" class="btn btn--solid">Scopri la collezione</a>
+        <a href="#campaign" class="btn btn--light">Guarda la campagna</a>
+      </div>
+    </div>
+    <div class="hero__bar" id="heroBar">
+      <button class="is-active caps"><i></i>01 <span class="long">— </span>Country Club</button>
+      <button class="caps"><i></i>02 <span class="long">— </span>Streetwear</button>
+      <button class="caps"><i></i>03 <span class="long">— </span>Sartoria</button>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Made in Italy <svg><use href="#i-star"/></svg> Cotone italiano <svg><use href="#i-star"/></svg> Golf club, streetwear <svg><use href="#i-star"/></svg> Sartoria dal 2023 <svg><use href="#i-star"/></svg> It's a lifestyle <svg><use href="#i-star"/></svg></span>
+      <span>Made in Italy <svg><use href="#i-star"/></svg> Cotone italiano <svg><use href="#i-star"/></svg> Golf club, streetwear <svg><use href="#i-star"/></svg> Sartoria dal 2023 <svg><use href="#i-star"/></svg> It's a lifestyle <svg><use href="#i-star"/></svg></span>
+    </div>
+  </div>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <div class="caps">(Il manifesto)</div>
+    <p class="manifesto__text" id="manifesto">Nati sui green dei vecchi club <span class="pill"><img src="https://images.unsplash.com/photo-1662692990252-c578c3a430b7?w=200&q=70" alt=""></span> e cresciuti per strada. Gedai è <em>sartoria italiana</em> con l'anima sportswear <span class="pill"><img src="https://images.unsplash.com/photo-1517257225266-3c82af13eae9?w=200&q=70" alt=""></span> — pochi capi, fatti bene, in cotone italiano. Non un marchio: <em>un club.</em></p>
+    <div class="manifesto__foot">
+      <a href="#atelier" class="btn btn--dark">La nostra storia</a>
+      <span class="caps">Est. 2023 — Italia</span>
+    </div>
+  </section>
+
+  <!-- CATEGORIE -->
+  <section class="cats" id="cats">
+    <div class="section-head">
+      <div><div class="caps">Shop per categoria</div><h2>Il <em>guardaroba</em></h2></div>
+      <a href="#" class="caps link-line">Vedi tutto</a>
+    </div>
+    <div class="cats__grid">
+      <a class="cat" href="#" data-cursor="Shop"><img src="https://images.unsplash.com/photo-1761956261543-b41cf407f522?w=900&q=80" alt="" loading="lazy"><div class="cat__label"><h3>Polo</h3><span class="caps">12 capi →</span></div></a>
+      <a class="cat" href="#" data-cursor="Shop"><img src="https://images.unsplash.com/photo-1590411506193-00ed62b2d08d?w=900&q=80" alt="" loading="lazy"><div class="cat__label"><h3>Maglieria</h3><span class="caps">8 capi →</span></div></a>
+      <a class="cat" href="#" data-cursor="Shop"><img src="https://images.unsplash.com/photo-1614031679232-0dae776a72ee?w=900&q=80" alt="" loading="lazy"><div class="cat__label"><h3>Capispalla</h3><span class="caps">6 capi →</span></div></a>
+      <a class="cat" href="#" data-cursor="Shop"><img src="https://images.unsplash.com/photo-1598302082214-b5b016737dfb?w=900&q=80" alt="" loading="lazy"><div class="cat__label"><h3>Accessori</h3><span class="caps">9 capi →</span></div></a>
+    </div>
+  </section>
+
+  <!-- NUOVI ARRIVI -->
+  <section class="arrivals" id="arrivals">
+    <div class="section-head">
+      <div><div class="caps">Drop 01 — Edizione numerata</div><h2>Nuovi <em>arrivi</em></h2></div>
+      <div class="arrivals__nav">
+        <button id="prev" aria-label="Precedente"><svg class="icon" style="transform:scaleX(-1)"><use href="#i-arrow"/></svg></button>
+        <button id="next" aria-label="Successivo"><svg class="icon"><use href="#i-arrow"/></svg></button>
+      </div>
+    </div>
+    <div class="track" id="track" data-cursor="Trascina"></div>
+    <div class="progress"><i id="progress"></i></div>
+  </section>
+
+  <!-- CAMPAGNA ORIZZONTALE -->
+  <section class="campaign" id="campaign">
+    <div class="campaign__pin">
+      <div class="campaign__track" id="campaignTrack">
+        <div class="campaign__intro">
+          <div class="caps">Campagna — Collezione 01</div>
+          <h2>Country <em>Club</em></h2>
+          <p>Un omaggio ai club di una volta: i green all'alba, le polo stirate, la giacca sulla spalla. Riletto con gli occhi di oggi.</p>
+          <a href="#arrivals" class="btn btn--light">Shop la collezione</a>
+        </div>
+        <figure class="shot shot--a"><div class="shot__img"><img src="https://images.unsplash.com/photo-1703231528189-9fd1091b8b81?w=1000&q=80" alt="Golfista d'epoca in bianco e nero" loading="lazy"></div><figcaption class="caps"><span>Archivio</span><span>01</span></figcaption></figure>
+        <figure class="shot shot--b"><div class="shot__img"><img src="https://images.unsplash.com/photo-1745973980697-3ac467ffc642?w=1400&q=80" alt="Golf cart tra gli alberi" loading="lazy"></div><figcaption class="caps"><span>Il green</span><span>02</span></figcaption></figure>
+        <figure class="shot shot--c"><div class="shot__img"><img src="https://images.unsplash.com/photo-1681741099751-cb27e0ab97a1?w=800&q=80" alt="Orologio del club sul campo" loading="lazy"></div><figcaption class="caps"><span>Le 7:00</span><span>03</span></figcaption></figure>
+        <figure class="shot shot--d"><div class="shot__img"><img src="https://images.unsplash.com/photo-1693163640190-f9dd38a88940?w=1100&q=80" alt="Golfista in movimento" loading="lazy"></div><figcaption class="caps"><span>Lo swing</span><span>04</span></figcaption></figure>
+        <figure class="shot shot--b"><div class="shot__img"><img src="https://images.unsplash.com/photo-1517257225266-3c82af13eae9?w=1400&q=80" alt="Ferri da golf" loading="lazy"></div><figcaption class="caps"><span>Gli attrezzi</span><span>05</span></figcaption></figure>
+        <figure class="shot shot--a"><div class="shot__img"><img src="https://images.unsplash.com/photo-1682717188036-83bc63ccccc7?w=1000&q=80" alt="Golfista d'epoca" loading="lazy"></div><figcaption class="caps"><span>Archivio</span><span>06</span></figcaption></figure>
+        <div class="campaign__end">Dal 2023,<br>il club è di chi<br>lo vive.<br><a href="#club" class="btn btn--light">Entra nel Club</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LA SARTORIA -->
+  <section class="atelier" id="atelier">
+    <div class="atelier__sticky" aria-hidden="true">
+      <img class="is-on" src="https://images.unsplash.com/photo-1615799998603-7c6270a45196?w=1600&q=80" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1618866903271-595806e0679d?w=1600&q=80" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1779910603439-78b5cb44e318?w=1600&q=80" alt="" loading="lazy">
+    </div>
+    <div class="atelier__steps">
+      <article class="step" data-step="0">
+        <img class="step__img" src="https://images.unsplash.com/photo-1615799998603-7c6270a45196?w=1000&q=80" alt="Trama di cotone" loading="lazy">
+        <div class="caps">La sartoria — Il cotone</div>
+        <div class="step__no">01</div>
+        <h3>Solo cotone <em>italiano.</em></h3>
+        <p>Scegliamo filati coltivati e lavorati in Italia: più morbidi, più resistenti, fatti per durare anni e non una stagione.</p>
+      </article>
+      <article class="step" data-step="1">
+        <img class="step__img" src="https://images.unsplash.com/photo-1618866903271-595806e0679d?w=1000&q=80" alt="Giacca sartoriale su una macchina da cucire" loading="lazy">
+        <div class="caps">La sartoria — Il taglio</div>
+        <div class="step__no">02</div>
+        <h3>Tagliato <em>a mano.</em></h3>
+        <p>Ogni pezzo nasce su un banco da taglio, come una giacca su misura. Vestibilità precise, proporzioni studiate.</p>
+      </article>
+      <article class="step" data-step="2">
+        <img class="step__img" src="https://images.unsplash.com/photo-1779910603439-78b5cb44e318?w=1000&q=80" alt="Sarto al lavoro" loading="lazy">
+        <div class="caps">La sartoria — La firma</div>
+        <div class="step__no">03</div>
+        <h3>Numerato, <em>uno a uno.</em></h3>
+        <p>Ogni drop è un'edizione limitata. Il tuo capo porta il suo numero: non ce n'è un altro uguale.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- STREETWEAR -->
+  <section class="street">
+    <img id="streetImg" src="https://images.unsplash.com/photo-1559697242-a465f2578a95?w=2200&q=80" alt="Due ragazzi in streetwear sotto il cielo" loading="lazy">
+    <div class="street__inner">
+      <div class="caps">Capsule urbana</div>
+      <h2>Dal green<br><em>alla strada.</em></h2>
+      <a href="#arrivals" class="btn btn--solid">Shop streetwear</a>
+    </div>
+  </section>
+
+  <!-- IL CLUB -->
+  <section class="club" id="club">
+    <svg viewBox="0 0 4846 2533" class="logo club__bg" aria-hidden="true"><use href="#gedai"/></svg>
+    <div>
+      <div class="caps">Membership</div>
+      <h2>Entra nel <em>Club.</em></h2>
+      <ul class="club__perks">
+        <li>Accesso anticipato a ogni drop numerato</li>
+        <li>Eventi privati e anteprime in atelier</li>
+        <li>10% sul tuo primo ordine</li>
+      </ul>
+    </div>
+    <form class="club__form" onsubmit="return false">
+      <label class="caps" for="email">La tua email</label>
+      <div class="field"><input id="email" type="email" placeholder="nome@email.it" autocomplete="email"><button class="caps" type="submit">Iscriviti →</button></div>
+      <p class="club__legal">Iscrivendoti accetti la nostra Privacy Policy. Puoi annullare quando vuoi.</p>
+    </form>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="community" id="community">
+    <div class="section-head">
+      <div><div class="caps">@gedai.club</div><h2>I membri del <em>Club</em></h2></div>
+      <a href="#" class="caps link-line">Seguici su Instagram</a>
+    </div>
+    <div class="community__grid">
+      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1591491672853-2210e08a15f5?w=600&q=75" alt="" loading="lazy"></a>
+      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1759365485726-cfe4166bbfe7?w=600&q=75" alt="" loading="lazy"></a>
+      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1591879468972-68d53647238c?w=600&q=75" alt="" loading="lazy"></a>
+      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1592459844445-567c2c9b7a2e?w=600&q=75" alt="" loading="lazy"></a>
+      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1788500304857-256ab412295c?w=600&q=75" alt="" loading="lazy"></a>
+      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1592937238247-cd0090e02f65?w=600&q=75" alt="" loading="lazy"></a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__top">
+    <div class="footer__news">
+      <h3>Le novità del Club,<br><em>prima di tutti.</em></h3>
+      <div class="field"><input type="email" placeholder="La tua email" aria-label="La tua email"><button class="caps">Iscriviti →</button></div>
+    </div>
+    <div class="footer__col"><h4 class="caps">Shop</h4><ul><li><a class="link-line" href="#">Nuovi arrivi</a></li><li><a class="link-line" href="#">Polo</a></li><li><a class="link-line" href="#">Maglieria</a></li><li><a class="link-line" href="#">Capispalla</a></li><li><a class="link-line" href="#">Accessori</a></li><li><a class="link-line" href="#">Gift card</a></li></ul></div>
+    <div class="footer__col"><h4 class="caps">Il Club</h4><ul><li><a class="link-line" href="#">Manifesto</a></li><li><a class="link-line" href="#">La Sartoria</a></li><li><a class="link-line" href="#">Journal</a></li><li><a class="link-line" href="#">Membership</a></li><li><a class="link-line" href="#">Eventi</a></li></ul></div>
+    <div class="footer__col"><h4 class="caps">Assistenza</h4><ul><li><a class="link-line" href="#">Spedizioni</a></li><li><a class="link-line" href="#">Resi e cambi</a></li><li><a class="link-line" href="#">Guida alle taglie</a></li><li><a class="link-line" href="#">Cura dei capi</a></li><li><a class="link-line" href="#">FAQ</a></li><li><a class="link-line" href="#">Contatti</a></li></ul></div>
+    <div class="footer__col"><h4 class="caps">Azienda</h4><ul><li><a class="link-line" href="#">Chi siamo</a></li><li><a class="link-line" href="#">Stampa</a></li><li><a class="link-line" href="#">Lavora con noi</a></li><li><a class="link-line" href="#">Rivenditori</a></li></ul></div>
+  </div>
+  <div class="footer__mid">
+    <div class="footer__social caps"><a class="link-line" href="#">Instagram</a><a class="link-line" href="#">TikTok</a><a class="link-line" href="#">Pinterest</a><a class="link-line" href="#">YouTube</a></div>
+    <div class="footer__pay" aria-label="Metodi di pagamento"><span>VISA</span><span>MASTERCARD</span><span>AMEX</span><span>PAYPAL</span><span>APPLE PAY</span><span>GOOGLE PAY</span><span>KLARNA</span></div>
+    <div class="footer__locale caps"><button>Italia (EUR €) ↓</button><button>Italiano ↓</button></div>
+  </div>
+  <div class="footer__legal">
+    <span>© 2026 Gedai — Made in Italy · P.IVA 00000000000</span>
+    <nav><a href="#" class="link-line">Privacy</a><a href="#" class="link-line">Cookie</a><a href="#" class="link-line">Termini di vendita</a><a href="#" class="link-line">Note legali</a><a href="#" class="link-line">Accessibilità</a></nav>
+  </div>
+  <svg viewBox="0 0 4846 2533" class="logo footer__mark" role="img" aria-label="Gedai"><use href="#gedai"/></svg>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script>
+(() => {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const U = (id, w) => `https://images.unsplash.com/${id}?w=${w}&q=80`;
+  const EASE = 'expo.out';
+
+  /* ---------- Scroll morbido (Lenis) collegato a GSAP ---------- */
+  const lenis = reduce ? null : new Lenis({ lerp: 0.09 });
+  if (lenis) {
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((t) => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+    window.lenis = lenis;   // utile per i test
+  }
+
+  /* ---------- Prodotti (segnaposto) ---------- */
+  const products = [
+    { name: 'Polo Club Piqué', color: 'Bianco', price: 145, a: 'photo-1621773881532-fe65715b5137', b: 'photo-1788500304864-724658f3e260', tag: 'N° 001', sw: ['#fff', '#1A2130', '#0E0E0E'], sizes: { S: 1, M: 2, L: 2, XL: 0 } },
+    { name: 'Overshirt Sartoriale', color: 'Nero', price: 260, a: 'photo-1610419965999-ff462f0c27f2', b: 'photo-1787044817434-b6d1f927ac21', tag: 'Ultimi pezzi', hot: true, sw: ['#0E0E0E', '#1A2130'], sizes: { S: 0, M: 1, L: 1, XL: 1 } },
+    { name: 'Track Jacket Campo', color: 'Arancio Segnale', price: 290, a: 'photo-1759365485726-cfe4166bbfe7', b: 'photo-1779177416602-7d92a9e2bfa6', tag: 'Nuovo', sw: ['#E8551F', '#1F4D3A', '#0E0E0E'], sizes: { S: 1, M: 1, L: 0, XL: 0 } },
+    { name: 'Polo Club', color: 'Blu Club', price: 145, a: 'photo-1775306413232-fecd45367613', b: 'photo-1788500304857-256ab412295c', tag: 'N° 004', sw: ['#1A2130', '#fff', '#EDE5DA'], sizes: { S: 2, M: 2, L: 2, XL: 1 } },
+    { name: 'Blazer Country', color: 'Grigio', price: 420, a: 'photo-1591879468972-68d53647238c', b: 'photo-1787045098569-2e17ae871df4', tag: 'Nuovo', sw: ['#8a8a88', '#1A2130'], sizes: { S: 1, M: 2, L: 1, XL: 1 } },
+    { name: 'Piumino Leggero', color: 'Nero', price: 390, a: 'photo-1614031679232-0dae776a72ee', b: 'photo-1617113930975-f9c7243ae527', tag: 'N° 006', sw: ['#0E0E0E'], sizes: { S: 1, M: 2, L: 1, XL: 1 } },
+    { name: 'Cappello Club', color: 'Bianco', price: 65, a: 'photo-1598302082214-b5b016737dfb', b: 'photo-1591491672853-2210e08a15f5', tag: 'Nuovo', sw: ['#fff', '#1A2130', '#1F4D3A'], sizes: { TU: 2 } },
+  ];
+  const track = document.getElementById('track');
+  track.innerHTML = products.map(p => `
+    <article class="card">
+      <a href="#" class="card__media" draggable="false">
+        <img src="${U(p.a, 800)}" alt="${p.name}, ${p.color}" loading="lazy" draggable="false">
+        <img src="${U(p.b, 800)}" alt="" loading="lazy" draggable="false">
+        <span class="card__tag caps ${p.hot ? 'hot' : ''}">${p.tag}</span>
+        <span class="card__quick"><span class="caps">Aggiungi — scegli la taglia</span><span class="card__sizes">${Object.entries(p.sizes).map(([s, n]) =>
+          `<button type="button" ${n === 0 ? 'disabled' : ''} class="${n === 1 ? 'low' : ''}" aria-label="Taglia ${s}${n === 1 ? ', ultimi pezzi' : ''}${n === 0 ? ', esaurita' : ''}">${s}</button>`).join('')}</span></span>
+      </a>
+      <div class="card__info"><div><h3>${p.name}</h3><p>${p.color}</p></div><div>€ ${p.price}</div></div>
+      <div class="swatches">${p.sw.map(c => `<i style="background:${c}"></i>`).join('')}</div>
+    </article>`).join('');
+  track.querySelectorAll('.card__quick button').forEach(b => b.addEventListener('click', (e) => e.preventDefault()));
+
+  /* slider: trascinamento col mouse, frecce, barra di avanzamento */
+  const prog = document.getElementById('progress');
+  const updateProg = () => {
+    const max = track.scrollWidth - track.clientWidth;
+    const vis = track.clientWidth / track.scrollWidth;
+    prog.style.width = (vis * 100) + '%';
+    prog.style.left = (max ? (track.scrollLeft / max) * (1 - vis) * 100 : 0) + '%';
+  };
+  track.addEventListener('scroll', updateProg, { passive: true }); addEventListener('resize', updateProg); updateProg();
+  const step = () => track.querySelector('.card').offsetWidth + 12;
+  document.getElementById('next').onclick = () => track.scrollBy({ left: step(), behavior: 'smooth' });
+  document.getElementById('prev').onclick = () => track.scrollBy({ left: -step(), behavior: 'smooth' });
+  let dragX = null, startLeft = 0, moved = false;
+  track.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; dragX = e.clientX; startLeft = track.scrollLeft; moved = false; });
+  addEventListener('pointermove', (e) => { if (dragX === null) return; const dx = e.clientX - dragX; if (Math.abs(dx) > 4) { moved = true; track.classList.add('is-drag'); } track.scrollLeft = startLeft - dx; });
+  addEventListener('pointerup', () => { if (dragX === null) return; dragX = null; track.classList.remove('is-drag'); });
+  track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }, true);
+
+  /* ---------- Barra annunci che ruota ---------- */
+  const ann = [...document.querySelectorAll('.announce span')]; let ai = 0;
+  setInterval(() => { const cur = ann[ai]; cur.classList.remove('is-on'); cur.classList.add('is-out'); ai = (ai + 1) % ann.length; ann[ai].classList.remove('is-out'); ann[ai].classList.add('is-on'); setTimeout(() => cur.classList.remove('is-out'), 900); }, 4000);
+
+  /* ---------- Header: trasparente sulla hero, poi pieno; si nasconde scendendo ---------- */
+  const header = document.getElementById('header'), hero = document.getElementById('hero');
+  let lastY = 0;
+  const onScroll = () => {
+    const y = scrollY;
+    header.classList.toggle('is-solid', y > hero.offsetHeight - 100);
+    header.classList.toggle('is-hidden', y > 300 && y > lastY + 2 && !document.body.classList.contains('menu-open'));
+    if (y < lastY - 2) header.classList.remove('is-hidden');
+    lastY = y;
+  };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* ---------- Menu a tutto schermo ---------- */
+  const menu = document.getElementById('menu'), burger = document.getElementById('burger');
+  const media = document.getElementById('menuMedia'), cap = document.getElementById('menuCap');
+  const links = [...document.querySelectorAll('#menuList a')];
+  links.forEach((a, i) => {
+    const img = new Image(); img.src = U(a.dataset.img, 1400); img.alt = ''; if (i === 0) img.className = 'is-on';
+    media.insertBefore(img, cap);
+    a.addEventListener('mouseenter', () => { media.querySelectorAll('img').forEach((m, j) => m.classList.toggle('is-on', j === i)); cap.textContent = a.dataset.cap; });
+  });
+  cap.textContent = links[0].dataset.cap;
+  const menuTl = gsap.timeline({ paused: true })
+    .set(menu, { visibility: 'visible' })
+    .to(menu, { clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'expo.inOut' })
+    .fromTo(links, { yPercent: 110 }, { yPercent: 0, duration: 1, stagger: 0.06, ease: EASE }, '-=.45')
+    .fromTo('.menu__foot > div', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .8, stagger: .08, ease: EASE }, '-=.8')
+    .fromTo(media, { clipPath: 'inset(0 0 0 100%)' }, { clipPath: 'inset(0 0 0 0%)', duration: 1.2, ease: 'expo.inOut' }, '-=1.3');
+  const openMenu = () => { document.getElementById('cursor').classList.remove('is-big'); document.body.classList.add('menu-open'); burger.setAttribute('aria-expanded', 'true'); lenis?.stop(); menuTl.timeScale(1).play(); };
+  const closeMenu = () => { if (!document.body.classList.contains('menu-open')) return; document.body.classList.remove('menu-open'); burger.setAttribute('aria-expanded', 'false'); lenis?.start(); menuTl.timeScale(1.6).reverse(); };
+  burger.addEventListener('click', () => document.body.classList.contains('menu-open') ? closeMenu() : openMenu());
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+  /* ancore interne: scroll morbido e chiusura menu */
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href'); if (id.length < 2) return;
+    const el = document.querySelector(id); if (!el) return;
+    e.preventDefault(); closeMenu();
+    lenis ? lenis.scrollTo(el, { duration: 1.6 }) : el.scrollIntoView();
+  }));
+
+  /* ---------- Hero slideshow ---------- */
+  const slides = [...hero.querySelectorAll('.slide')], texts = [...hero.querySelectorAll('.hero__text')], tabs = [...document.querySelectorAll('#heroBar button')];
+  const DUR = 6; let cur = 0, barTween, busy = false;
+  texts.forEach(t => t.classList.add('is-active'));   // visibili per poterli dividere in righe
+  const splits = texts.map(t => SplitText.create(t.querySelector('.hero__title'), { type: 'lines', mask: 'lines' }));
+  texts.forEach((t, i) => t.classList.toggle('is-active', i === 0));
+  const runBar = () => { barTween?.kill(); gsap.set(tabs.map(t => t.querySelector('i')), { scaleX: 0 }); barTween = gsap.to(tabs[cur].querySelector('i'), { scaleX: 1, duration: DUR, ease: 'none', onComplete: () => go((cur + 1) % slides.length) }); };
+  const go = (n) => {
+    if (n === cur || busy) return; busy = true;
+    const prev = cur; cur = n;
+    tabs.forEach((t, i) => t.classList.toggle('is-active', i === n));
+    gsap.set(slides[n], { zIndex: 3 }); gsap.set(slides[prev], { zIndex: 2 });
+    const tl = gsap.timeline({ onComplete: () => { slides[prev].classList.remove('is-active'); gsap.set(slides[prev], { zIndex: 1, clipPath: 'inset(100% 0 0 0)' }); slides[n].classList.add('is-active'); gsap.set(slides[n], { zIndex: 2 }); busy = false; } });
+    tl.fromTo(slides[n], { clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0% 0 0 0)', duration: 1.4, ease: 'expo.inOut' })
+      .fromTo(slides[n].querySelector('img'), { scale: 1.35 }, { scale: 1.06, duration: 2.2, ease: EASE }, 0)
+      .to(slides[prev].querySelector('img'), { yPercent: -10, duration: 1.4, ease: 'expo.inOut' }, 0)
+      .to(splits[prev].lines, { yPercent: -110, duration: .7, stagger: .05, ease: 'expo.in' }, 0)
+      .add(() => { texts[prev].classList.remove('is-active'); gsap.set(slides[prev].querySelector('img'), { yPercent: 0 }); texts[n].classList.add('is-active'); }, .72)
+      .fromTo(splits[n].lines, { yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: .08, ease: EASE }, .75);
+    runBar();
+  };
+  tabs.forEach((t, i) => t.addEventListener('click', () => go(i)));
+  if (!reduce) gsap.to('.hero__content', { yPercent: -30, opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+
+  /* ---------- Preloader (una volta per visita) ---------- */
+  const loader = document.getElementById('loader');
+  let seen = false; try { seen = sessionStorage.getItem('gedai-loader') === '1'; } catch (e) {}
+  const heroIntro = () => {
+    gsap.fromTo(slides[0].querySelector('img'), { scale: 1.3 }, { scale: 1.06, duration: 2.4, ease: EASE });
+    gsap.fromTo(splits[0].lines, { yPercent: 110 }, { yPercent: 0, duration: 1.4, stagger: .1, ease: EASE, delay: .15 });
+    gsap.from(['.hero__text.is-active .caps', '.hero__ctas .btn', '#heroBar button'], { opacity: 0, y: 20, duration: 1, stagger: .06, ease: EASE, delay: .4 });
+    runBar();
+  };
+  if (seen || reduce) { loader.remove(); reduce ? runBar() : heroIntro(); }
+  else {
+    const count = { v: 0 }, out = document.getElementById('loaderCount');
+    gsap.set(splits[0].lines, { yPercent: 110 });
+    gsap.timeline({ onComplete: () => { loader.remove(); try { sessionStorage.setItem('gedai-loader', '1'); } catch (e) {} } })
+      .to('.loader__logo', { clipPath: 'inset(0 0% 0 0)', duration: 1.6, ease: 'power2.inOut' }, .1)
+      .to(count, { v: 100, duration: 1.8, ease: 'power2.inOut', onUpdate: () => out.textContent = String(Math.round(count.v)).padStart(2, '0') }, 0)
+      .to(['.loader__logo', '.loader__count', '.loader__row'], { opacity: 0, y: -20, duration: .5, ease: 'power2.in' }, 2)
+      .to(loader, { clipPath: 'inset(0 0 100% 0)', duration: 1.1, ease: 'expo.inOut' }, 2.3)
+      .add(heroIntro, 2.5);
+  }
+
+  if (!reduce) {
+    /* ---------- Titoli che salgono riga per riga ---------- */
+    document.querySelectorAll('.section-head h2, .campaign__intro h2, .street h2, .club h2, .step h3, .footer__news h3').forEach(el => {
+      SplitText.create(el, { type: 'lines', mask: 'lines', autoSplit: true, onSplit: (s) => gsap.from(s.lines, { yPercent: 110, duration: 1.2, stagger: .08, ease: EASE, scrollTrigger: { trigger: el, start: 'top 88%' } }) });
+    });
+
+    /* ---------- Manifesto: le parole si accendono mentre scorri ---------- */
+    const man = SplitText.create('#manifesto', { type: 'words' });
+    gsap.fromTo(man.words, { opacity: .14 }, { opacity: 1, stagger: .1, ease: 'none', scrollTrigger: { trigger: '#manifesto', start: 'top 80%', end: 'bottom 45%', scrub: true } });
+
+    /* ---------- Foto che si svelano ---------- */
+    gsap.utils.toArray('.cat, .community__grid a').forEach((el, i) => {
+      const st = { trigger: el, start: 'top 92%' };
+      gsap.fromTo(el, { clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0% 0 0 0)', duration: 1.4, ease: 'expo.inOut', delay: (i % 4) * .08, scrollTrigger: st });
+      gsap.fromTo(el.querySelector('img'), { scale: 1.3 }, { scale: 1, duration: 1.8, ease: EASE, delay: (i % 4) * .08, scrollTrigger: st, clearProps: 'transform' });
+    });
+    gsap.from('.card', { y: 60, opacity: 0, duration: 1.2, stagger: .08, ease: EASE, scrollTrigger: { trigger: '#track', start: 'top 88%' } });
+
+    /* ---------- Streetwear: parallasse ---------- */
+    gsap.fromTo('#streetImg', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.street', start: 'top bottom', end: 'bottom top', scrub: true } });
+
+    /* ---------- Campagna: scorrimento orizzontale (solo PC) ---------- */
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 1025px)', () => {
+      const ct = document.getElementById('campaignTrack');
+      const dist = () => ct.scrollWidth - innerWidth;
+      const tween = gsap.to(ct, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: '.campaign', pin: '.campaign__pin', scrub: 1, start: 'top top', end: () => '+=' + dist(), invalidateOnRefresh: true } });
+      ct.querySelectorAll('.shot img').forEach(img => gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: img.closest('.shot'), containerAnimation: tween, start: 'left right', end: 'right left', scrub: true } }));
+    });
+
+    /* ---------- Sartoria: la foto fissa cambia a ogni capitolo ---------- */
+    const stickyImgs = document.querySelectorAll('.atelier__sticky img');
+    document.querySelectorAll('.step').forEach(s => ScrollTrigger.create({ trigger: s, start: 'top 55%', end: 'bottom 55%', onToggle: (st) => st.isActive && stickyImgs.forEach((im, j) => im.classList.toggle('is-on', j === +s.dataset.step)) }));
+  }
+
+  /* ---------- Cursore personalizzato (solo mouse) ---------- */
+  if (fine && !reduce) {
+    const c = document.getElementById('cursor'), label = c.querySelector('span');
+    const xTo = gsap.quickTo(c, 'x', { duration: .45, ease: 'power3' }), yTo = gsap.quickTo(c, 'y', { duration: .45, ease: 'power3' });
+    addEventListener('pointermove', (e) => { c.classList.add('is-live'); xTo(e.clientX); yTo(e.clientY); });
+    document.addEventListener('mouseleave', () => c.classList.remove('is-live'));
+    document.querySelectorAll('[data-cursor]').forEach(el => {
+      el.addEventListener('mouseenter', () => { label.textContent = el.dataset.cursor; c.classList.add('is-big'); });
+      el.addEventListener('mouseleave', () => c.classList.remove('is-big'));
+    });
+    document.querySelectorAll('.hero__ctas, .hero__bar').forEach(el => {
+      el.addEventListener('mouseenter', () => c.classList.remove('is-big'));
+      el.addEventListener('mouseleave', () => { if (el.closest('.hero')) c.classList.add('is-big'); });
+    });
+  }
+
+  addEventListener('load', () => ScrollTrigger.refresh());
+})();
+</script>
+</body>
+</html>
