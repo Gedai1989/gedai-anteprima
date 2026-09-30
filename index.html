@@ -139,18 +139,6 @@
   .pill img { width: 100%; height: 100%; object-fit: cover; }
   .manifesto__foot { grid-column: 2; display: flex; gap: 40px; align-items: center; margin-top: 40px; }
 
-  /* ================= Categorie ================= */
-  .cats { padding: 0 0 clamp(96px, 12vw, 180px); }
-  .cats__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 var(--gutter); }
-  .cat { position: relative; aspect-ratio: 3 / 4.4; overflow: hidden; color: var(--cream); }
-  .cat img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease); }
-  .cat::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,12,18,.55), transparent 50%); }
-  .cat:hover img { transform: scale(1.06); }
-  .cat__label { position: absolute; left: 20px; right: 20px; bottom: 20px; z-index: 2; display: flex; justify-content: space-between; align-items: end; }
-  .cat__label h3 { margin: 0; font: 400 clamp(26px, 2.6vw, 40px)/1 var(--serif); }
-  .cat__label .caps { transform: translateY(8px); opacity: 0; transition: .6s var(--ease); }
-  .cat:hover .cat__label .caps { transform: none; opacity: 1; }
-
   /* ================= Nuovi arrivi ================= */
   .arrivals { padding: 0 0 clamp(96px, 12vw, 180px); }
   .arrivals__nav { display: flex; gap: 8px; }
@@ -204,28 +192,13 @@
   .campaign__end { flex: 0 0 clamp(280px, 28vw, 440px); font: italic 400 clamp(36px, 4vw, 64px)/1 var(--serif); }
   .campaign__end .btn { margin-top: 28px; }
 
-  /* ================= Streetwear a tutto schermo ================= */
-  .street { position: relative; height: 120vh; overflow: hidden; color: var(--cream); display: grid; place-items: center; text-align: center; }
-  .street img { position: absolute; left: 0; top: -10%; width: 100%; height: 120%; object-fit: cover; }
-  .street::after { content: ""; position: absolute; inset: 0; background: rgba(10,12,18,.32); }
-  .street__inner { position: relative; z-index: 2; padding: 0 var(--gutter); }
-  .street h2 { margin: 18px 0 36px; font: 400 clamp(56px, 10vw, 180px)/.88 var(--serif); letter-spacing: -.035em; }
-  .street h2 em { font-style: italic; }
-
-  /* ================= Il Club ================= */
-  .club { position: relative; overflow: hidden; background: var(--court); color: var(--cream); padding: clamp(96px, 12vw, 180px) var(--gutter); display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: end; }
-  .club__bg { position: absolute; right: -6vw; bottom: -8vw; width: 70vw; color: rgba(237,229,218,.07); pointer-events: none; }
-  .club h2 { position: relative; margin: 16px 0 0; font: 400 clamp(52px, 7vw, 120px)/.92 var(--serif); letter-spacing: -.03em; }
-  .club h2 em { font-style: italic; }
-  .club__perks { position: relative; list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 12px; }
-  .club__perks li { display: flex; gap: 14px; align-items: baseline; }
-  .club__perks li::before { content: "✦"; color: var(--signal); font-size: 10px; }
-  .club__form { position: relative; }
+  /* ================= Newsletter (nel footer) ================= */
   .field { display: flex; border-bottom: 1px solid rgba(237,229,218,.5); }
   .field input { flex: 1; min-width: 0; height: 58px; background: none; border: 0; outline: 0; color: var(--cream); font: 400 18px var(--sans); }
   .field input::placeholder { color: rgba(237,229,218,.55); }
   .field button { padding: 0 4px 0 18px; }
-  .club__legal { margin-top: 14px; opacity: .6; font-size: 12px; }
+  .footer__perks { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 16px 0 0; padding: 0; list-style: none; opacity: .75; }
+  .footer__perks li::before { content: "✦ "; color: var(--signal); font-size: 9px; }
 
   /* ================= Footer ================= */
   .footer { background: var(--navy); color: var(--cream); padding: clamp(64px, 8vw, 120px) var(--gutter) 0; overflow: hidden; }
@@ -257,7 +230,6 @@
     .menu__media { display: none; }
     .manifesto { grid-template-columns: 1fr; }
     .manifesto__foot { grid-column: 1; }
-    .cats__grid { grid-template-columns: repeat(2, 1fr); }
     .track { grid-auto-columns: calc((100% - 2 * var(--gutter) - 12px) / 2.3); }
     .footer__top { grid-template-columns: repeat(2, 1fr); }
     .footer__news { grid-column: 1 / -1; }
@@ -290,15 +262,9 @@
     .section-head { flex-direction: column; align-items: start; }
     .arrivals__nav { display: none; }
     .track { grid-auto-columns: 74%; }
-    .cats__grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 72%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
-    .cats__grid::-webkit-scrollbar { display: none; }
-    .cat { scroll-snap-align: start; }
-    .cat__label .caps { opacity: 1; transform: none; }
     .card__quick { display: none; }
     .shot--a, .shot--b, .shot--c, .shot--d { width: 78vw; height: 58vh; }
     .campaign__intro, .campaign__end { flex-basis: 84vw; }
-    .street { height: 90vh; }
-    .club { grid-template-columns: 1fr; }
     .footer__top { grid-template-columns: 1fr 1fr; gap: 36px 20px; }
     .footer__mid { flex-direction: column; align-items: flex-start; }
   }
@@ -339,8 +305,8 @@
       <span class="burger__lines"><i></i><i></i></span>
       <span class="burger__label"><span>Menu</span><span>Chiudi</span></span>
     </button>
-    <a href="#arrivals" class="link-line hide-tab">Nuovi arrivi</a>
-    <a href="#club" class="link-line hide-tab">Il Club</a>
+    <a href="#arrivals" class="link-line hide-tab">Shop</a>
+    <a href="#newsletter" class="link-line hide-tab">Il Club</a>
   </div>
   <a href="#hero" aria-label="Gedai, home"><svg viewBox="0 0 4846 2533" class="logo header__logo" role="img" aria-label="Gedai"><use href="#gedai"/></svg></a>
   <div class="header__right caps">
@@ -354,10 +320,10 @@
 <nav class="menu" id="menu" aria-label="Menu principale">
   <div class="menu__nav">
     <ul class="menu__list" id="menuList">
-      <li><a href="#arrivals" data-img="photo-1788500304864-724658f3e260" data-cap="Nuovi arrivi — Drop 01">Nuovi arrivi <sup>01</sup></a></li>
-      <li><a href="#cats" data-img="photo-1591879468972-68d53647238c" data-cap="Uomo — Tutto il guardaroba">Uomo <sup>02</sup></a></li>
-      <li><a href="#campaign" data-img="photo-1592919505780-303950717480" data-cap="Collezione 01 — Country Club">Collezioni <sup>03</sup></a></li>
-      <li><a href="#club" data-img="photo-1681741099751-cb27e0ab97a1" data-cap="Il Club — Membri dal 2023">Il Club <sup>04</sup></a></li>
+      <li><a href="#arrivals" data-img="photo-1788500304864-724658f3e260" data-cap="Shop — Tutti i capi">Shop <sup>01</sup></a></li>
+      <li><a href="#campaign" data-img="photo-1592919505780-303950717480" data-cap="Collezione 01 — Country Club">Collezione 01 <sup>02</sup></a></li>
+      <li><a href="#newsletter" data-img="photo-1681741099751-cb27e0ab97a1" data-cap="Il Club — 10% sul primo ordine">Il Club <sup>03</sup></a></li>
+      <li><a href="#footer" data-img="photo-1591879468972-68d53647238c" data-cap="Contatti — Siamo qui">Contatti <sup>04</sup></a></li>
     </ul>
     <div class="menu__foot">
       <div><span class="caps">Assistenza</span><a href="#" class="link-line">Spedizioni e resi</a><a href="#" class="link-line">Guida alle taglie</a><a href="#" class="link-line">Contatti</a></div>
@@ -412,25 +378,12 @@
     </div>
   </section>
 
-  <!-- CATEGORIE -->
-  <section class="cats" id="cats">
-    <div class="section-head">
-      <div><div class="caps">Shop per categoria</div><h2>Il <em>guardaroba</em></h2></div>
-      <a href="#" class="caps link-line">Vedi tutto</a>
-    </div>
-    <div class="cats__grid">
-      <a class="cat" href="#" data-cursor="Shop"><img src="https://images.unsplash.com/photo-1761956261543-b41cf407f522?w=900&q=80" alt="" loading="lazy"><div class="cat__label"><h3>Polo</h3><span class="caps">12 capi →</span></div></a>
-      <a class="cat" href="#" data-cursor="Shop"><img src="https://images.unsplash.com/photo-1590411506193-00ed62b2d08d?w=900&q=80" alt="" loading="lazy"><div class="cat__label"><h3>Maglieria</h3><span class="caps">8 capi →</span></div></a>
-      <a class="cat" href="#" data-cursor="Shop"><img src="https://images.unsplash.com/photo-1614031679232-0dae776a72ee?w=900&q=80" alt="" loading="lazy"><div class="cat__label"><h3>Capispalla</h3><span class="caps">6 capi →</span></div></a>
-      <a class="cat" href="#" data-cursor="Shop"><img src="https://images.unsplash.com/photo-1598302082214-b5b016737dfb?w=900&q=80" alt="" loading="lazy"><div class="cat__label"><h3>Accessori</h3><span class="caps">9 capi →</span></div></a>
-    </div>
-  </section>
-
   <!-- NUOVI ARRIVI -->
   <section class="arrivals" id="arrivals">
     <div class="section-head">
-      <div><div class="caps">Drop 01 — Edizione numerata</div><h2>Nuovi <em>arrivi</em></h2></div>
+      <div><div class="caps">Drop 01 — Edizione numerata</div><h2>La <em>collezione</em></h2></div>
       <div class="arrivals__nav">
+        <a href="#" class="caps link-line" style="align-self:center;margin-right:16px">Vedi tutti (12)</a>
         <button id="prev" aria-label="Precedente"><svg class="icon" style="transform:scaleX(-1)"><use href="#i-arrow"/></svg></button>
         <button id="next" aria-label="Successivo"><svg class="icon"><use href="#i-arrow"/></svg></button>
       </div>
@@ -455,49 +408,20 @@
         <figure class="shot shot--d"><div class="shot__img"><img src="https://images.unsplash.com/photo-1693163640190-f9dd38a88940?w=1100&q=80" alt="Golfista in movimento" loading="lazy"></div><figcaption class="caps"><span>Lo swing</span><span>04</span></figcaption></figure>
         <figure class="shot shot--b"><div class="shot__img"><img src="https://images.unsplash.com/photo-1517257225266-3c82af13eae9?w=1400&q=80" alt="Ferri da golf" loading="lazy"></div><figcaption class="caps"><span>Gli attrezzi</span><span>05</span></figcaption></figure>
         <figure class="shot shot--a"><div class="shot__img"><img src="https://images.unsplash.com/photo-1682717188036-83bc63ccccc7?w=1000&q=80" alt="Golfista d'epoca" loading="lazy"></div><figcaption class="caps"><span>Archivio</span><span>06</span></figcaption></figure>
-        <div class="campaign__end">Dal 2023,<br>il club è di chi<br>lo vive.<br><a href="#club" class="btn btn--light">Entra nel Club</a></div>
+        <div class="campaign__end">Dal 2023,<br>il club è di chi<br>lo vive.<br><a href="#newsletter" class="btn btn--light">Entra nel Club</a></div>
       </div>
     </div>
   </section>
-
-  <!-- STREETWEAR -->
-  <section class="street">
-    <img id="streetImg" src="https://images.unsplash.com/photo-1559697242-a465f2578a95?w=2200&q=80" alt="Due ragazzi in streetwear sotto il cielo" loading="lazy">
-    <div class="street__inner">
-      <div class="caps">Capsule urbana</div>
-      <h2>Dal green<br><em>alla strada.</em></h2>
-      <a href="#arrivals" class="btn btn--solid">Shop streetwear</a>
-    </div>
-  </section>
-
-  <!-- IL CLUB -->
-  <section class="club" id="club">
-    <svg viewBox="0 0 4846 2533" class="logo club__bg" aria-hidden="true"><use href="#gedai"/></svg>
-    <div>
-      <div class="caps">Membership</div>
-      <h2>Entra nel <em>Club.</em></h2>
-      <ul class="club__perks">
-        <li>Accesso anticipato a ogni drop numerato</li>
-        <li>Eventi privati e anteprime in atelier</li>
-        <li>10% sul tuo primo ordine</li>
-      </ul>
-    </div>
-    <form class="club__form" onsubmit="return false">
-      <label class="caps" for="email">La tua email</label>
-      <div class="field"><input id="email" type="email" placeholder="nome@email.it" autocomplete="email"><button class="caps" type="submit">Iscriviti →</button></div>
-      <p class="club__legal">Iscrivendoti accetti la nostra Privacy Policy. Puoi annullare quando vuoi.</p>
-    </form>
-  </section>
-
 </main>
 
-<footer class="footer">
+<footer class="footer" id="footer">
   <div class="footer__top">
-    <div class="footer__news">
-      <h3>Le novità del Club,<br><em>prima di tutti.</em></h3>
-      <div class="field"><input type="email" placeholder="La tua email" aria-label="La tua email"><button class="caps">Iscriviti →</button></div>
+    <div class="footer__news" id="newsletter">
+      <h3>Entra nel Club,<br><em>prima di tutti.</em></h3>
+      <form class="field" onsubmit="return false"><input type="email" placeholder="La tua email" aria-label="La tua email" autocomplete="email"><button class="caps" type="submit">Iscriviti →</button></form>
+      <ul class="footer__perks caps"><li>10% sul primo ordine</li><li>Accesso anticipato ai drop</li></ul>
     </div>
-    <div class="footer__col"><h4 class="caps">Shop</h4><ul><li><a class="link-line" href="#">Nuovi arrivi</a></li><li><a class="link-line" href="#">Polo</a></li><li><a class="link-line" href="#">Maglieria</a></li><li><a class="link-line" href="#">Capispalla</a></li><li><a class="link-line" href="#">Accessori</a></li><li><a class="link-line" href="#">Gift card</a></li></ul></div>
+    <div class="footer__col"><h4 class="caps">Shop</h4><ul><li><a class="link-line" href="#">Tutti i capi</a></li><li><a class="link-line" href="#">Nuovi arrivi</a></li><li><a class="link-line" href="#">Accessori</a></li><li><a class="link-line" href="#">Gift card</a></li></ul></div>
     <div class="footer__col"><h4 class="caps">Il Club</h4><ul><li><a class="link-line" href="#">Manifesto</a></li><li><a class="link-line" href="#">Membership</a></li><li><a class="link-line" href="#">Eventi</a></li></ul></div>
     <div class="footer__col"><h4 class="caps">Assistenza</h4><ul><li><a class="link-line" href="#">Spedizioni</a></li><li><a class="link-line" href="#">Resi e cambi</a></li><li><a class="link-line" href="#">Guida alle taglie</a></li><li><a class="link-line" href="#">Cura dei capi</a></li><li><a class="link-line" href="#">FAQ</a></li><li><a class="link-line" href="#">Contatti</a></li></ul></div>
     <div class="footer__col"><h4 class="caps">Azienda</h4><ul><li><a class="link-line" href="#">Chi siamo</a></li><li><a class="link-line" href="#">Stampa</a></li><li><a class="link-line" href="#">Lavora con noi</a></li><li><a class="link-line" href="#">Rivenditori</a></li></ul></div>
@@ -670,7 +594,7 @@
 
   if (!reduce) {
     /* ---------- Titoli che salgono riga per riga ---------- */
-    document.querySelectorAll('.section-head h2, .campaign__intro h2, .street h2, .club h2, .footer__news h3').forEach(el => {
+    document.querySelectorAll('.section-head h2, .campaign__intro h2, .footer__news h3').forEach(el => {
       SplitText.create(el, { type: 'lines', mask: 'lines', autoSplit: true, onSplit: (s) => gsap.from(s.lines, { yPercent: 110, duration: 1.2, stagger: .08, ease: EASE, scrollTrigger: { trigger: el, start: 'top 88%' } }) });
     });
 
@@ -679,15 +603,7 @@
     gsap.fromTo(man.words, { opacity: .14 }, { opacity: 1, stagger: .1, ease: 'none', scrollTrigger: { trigger: '#manifesto', start: 'top 80%', end: 'bottom 45%', scrub: true } });
 
     /* ---------- Foto che si svelano ---------- */
-    gsap.utils.toArray('.cat').forEach((el, i) => {
-      const st = { trigger: el, start: 'top 92%' };
-      gsap.fromTo(el, { clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0% 0 0 0)', duration: 1.4, ease: 'expo.inOut', delay: (i % 4) * .08, scrollTrigger: st });
-      gsap.fromTo(el.querySelector('img'), { scale: 1.3 }, { scale: 1, duration: 1.8, ease: EASE, delay: (i % 4) * .08, scrollTrigger: st, clearProps: 'transform' });
-    });
     gsap.from('.card', { y: 60, opacity: 0, duration: 1.2, stagger: .08, ease: EASE, scrollTrigger: { trigger: '#track', start: 'top 88%' } });
-
-    /* ---------- Streetwear: parallasse ---------- */
-    gsap.fromTo('#streetImg', { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.street', start: 'top bottom', end: 'bottom top', scrub: true } });
 
     /* ---------- Campagna: scorrimento orizzontale (solo PC) ---------- */
     const mm = gsap.matchMedia();
@@ -704,16 +620,18 @@
   if (fine && !reduce) {
     const c = document.getElementById('cursor'), label = c.querySelector('span');
     const xTo = gsap.quickTo(c, 'x', { duration: .45, ease: 'power3' }), yTo = gsap.quickTo(c, 'y', { duration: .45, ease: 'power3' });
-    addEventListener('pointermove', (e) => { c.classList.add('is-live'); xTo(e.clientX); yTo(e.clientY); });
-    document.addEventListener('mouseleave', () => c.classList.remove('is-live'));
-    document.querySelectorAll('[data-cursor]').forEach(el => {
-      el.addEventListener('mouseenter', () => { label.textContent = el.dataset.cursor; c.classList.add('is-big'); });
-      el.addEventListener('mouseleave', () => c.classList.remove('is-big'));
-    });
-    document.querySelectorAll('.hero__ctas, .hero__bar').forEach(el => {
-      el.addEventListener('mouseenter', () => c.classList.remove('is-big'));
-      el.addEventListener('mouseleave', () => { if (el.closest('.hero')) c.classList.add('is-big'); });
-    });
+    // il cerchio con la scritta si decide da cosa c'è sotto il puntatore: funziona anche quando scorri senza muovere il mouse
+    let px = -1, py = -1;
+    const update = () => {
+      if (px < 0 || document.body.classList.contains('menu-open')) { c.classList.remove('is-big'); return; }
+      const el = document.elementFromPoint(px, py);
+      const target = el && !el.closest('.hero__ctas, .hero__bar, .card__quick, .header') ? el.closest('[data-cursor]') : null;
+      c.classList.toggle('is-big', !!target);
+      if (target) label.textContent = target.dataset.cursor;
+    };
+    addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; c.classList.add('is-live'); xTo(px); yTo(py); update(); });
+    addEventListener('scroll', update, { passive: true });
+    document.addEventListener('mouseleave', () => { px = -1; c.classList.remove('is-live', 'is-big'); });
   }
 
   addEventListener('load', () => ScrollTrigger.refresh());
