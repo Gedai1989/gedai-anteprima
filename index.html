@@ -140,7 +140,7 @@
   .manifesto__foot { grid-column: 2; display: flex; gap: 40px; align-items: center; margin-top: 40px; }
 
   /* ================= Nuovi arrivi ================= */
-  .arrivals { padding: 0 0 clamp(96px, 12vw, 180px); }
+  .arrivals { padding: clamp(72px, 9vw, 140px) 0 0; }
   .arrivals__nav { display: flex; gap: 8px; }
   .arrivals__nav button { width: 50px; height: 50px; border: 1px solid var(--line); display: grid; place-items: center; transition: background .4s, color .4s; }
   .arrivals__nav button:hover { background: var(--navy); color: var(--cream); }
@@ -368,16 +368,6 @@
     </div>
   </div>
 
-  <!-- MANIFESTO -->
-  <section class="manifesto">
-    <div class="caps">(Il manifesto)</div>
-    <p class="manifesto__text" id="manifesto">Nati sui green dei vecchi club <span class="pill"><img src="https://images.unsplash.com/photo-1662692990252-c578c3a430b7?w=200&q=70" alt=""></span> e cresciuti per strada. Gedai è <em>sartoria italiana</em> con l'anima sportswear <span class="pill"><img src="https://images.unsplash.com/photo-1517257225266-3c82af13eae9?w=200&q=70" alt=""></span> — pochi capi, fatti bene, in cotone italiano. Non un marchio: <em>un club.</em></p>
-    <div class="manifesto__foot">
-      <a href="#arrivals" class="btn btn--dark">Scopri i capi</a>
-      <span class="caps">Est. 2023 — Italia</span>
-    </div>
-  </section>
-
   <!-- NUOVI ARRIVI -->
   <section class="arrivals" id="arrivals">
     <div class="section-head">
@@ -390,6 +380,16 @@
     </div>
     <div class="track" id="track" data-cursor="Trascina"></div>
     <div class="progress"><i id="progress"></i></div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <div class="caps">(Il manifesto)</div>
+    <p class="manifesto__text" id="manifesto">Nati sui green dei vecchi club <span class="pill"><img src="https://images.unsplash.com/photo-1662692990252-c578c3a430b7?w=200&q=70" alt=""></span> e cresciuti per strada. Gedai è <em>sartoria italiana</em> con l'anima sportswear <span class="pill"><img src="https://images.unsplash.com/photo-1517257225266-3c82af13eae9?w=200&q=70" alt=""></span> — pochi capi, fatti bene, in cotone italiano. Non un marchio: <em>un club.</em></p>
+    <div class="manifesto__foot">
+      <a href="#arrivals" class="btn btn--dark">Scopri i capi</a>
+      <span class="caps">Est. 2023 — Italia</span>
+    </div>
   </section>
 
   <!-- CAMPAGNA ORIZZONTALE -->
