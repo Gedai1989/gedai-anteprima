@@ -204,20 +204,6 @@
   .campaign__end { flex: 0 0 clamp(280px, 28vw, 440px); font: italic 400 clamp(36px, 4vw, 64px)/1 var(--serif); }
   .campaign__end .btn { margin-top: 28px; }
 
-  /* ================= La sartoria ================= */
-  .atelier { display: grid; grid-template-columns: 1fr 1fr; background: var(--paper); }
-  .atelier__sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-  .atelier__sticky img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); transition: opacity 1s var(--ease), transform 1.6s var(--ease); }
-  .atelier__sticky img.is-on { opacity: 1; transform: none; }
-  .atelier__steps { padding: 0 var(--gutter); }
-  .step { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; max-width: 520px; margin-left: clamp(0px, 5vw, 80px); border-bottom: 1px solid var(--line); }
-  .step:last-child { border-bottom: 0; }
-  .step__no { font: italic 400 clamp(64px, 8vw, 130px)/1 var(--serif); color: var(--signal); margin-top: 18px; }
-  .step h3 { margin: 16px 0; font: 400 clamp(34px, 3.6vw, 56px)/1 var(--serif); color: var(--navy); }
-  .step h3 em { font-style: italic; }
-  .step p { margin: 0; color: #4d4a45; max-width: 44ch; }
-  .step__img { display: none; }
-
   /* ================= Streetwear a tutto schermo ================= */
   .street { position: relative; height: 120vh; overflow: hidden; color: var(--cream); display: grid; place-items: center; text-align: center; }
   .street img { position: absolute; left: 0; top: -10%; width: 100%; height: 120%; object-fit: cover; }
@@ -240,13 +226,6 @@
   .field input::placeholder { color: rgba(237,229,218,.55); }
   .field button { padding: 0 4px 0 18px; }
   .club__legal { margin-top: 14px; opacity: .6; font-size: 12px; }
-
-  /* ================= Community ================= */
-  .community { padding: clamp(96px, 12vw, 180px) 0; }
-  .community__grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 0 var(--gutter); }
-  .community__grid a { position: relative; aspect-ratio: 1; overflow: hidden; }
-  .community__grid img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease), filter .6s; }
-  .community__grid a:hover img { transform: scale(1.06); filter: brightness(.8); }
 
   /* ================= Footer ================= */
   .footer { background: var(--navy); color: var(--cream); padding: clamp(64px, 8vw, 120px) var(--gutter) 0; overflow: hidden; }
@@ -282,16 +261,11 @@
     .track { grid-auto-columns: calc((100% - 2 * var(--gutter) - 12px) / 2.3); }
     .footer__top { grid-template-columns: repeat(2, 1fr); }
     .footer__news { grid-column: 1 / -1; }
-    .community__grid { grid-template-columns: repeat(3, 1fr); }
     .campaign__pin { height: auto; padding: 96px 0; }
     .campaign__track { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; width: 100%; }
     .campaign__track::-webkit-scrollbar { display: none; }
     .campaign__track > * { scroll-snap-align: start; }
     .shot--a, .shot--b, .shot--c, .shot--d { height: 56vh; margin: 0; align-self: center; }
-    .atelier { grid-template-columns: 1fr; }
-    .atelier__sticky { display: none; }
-    .step { min-height: 0; padding: 72px 0; margin: 0; max-width: none; }
-    .step__img { display: block; aspect-ratio: 4 / 3; object-fit: cover; width: 100%; margin-bottom: 28px; }
   }
 
   /* ================= Telefono ================= */
@@ -325,7 +299,6 @@
     .campaign__intro, .campaign__end { flex-basis: 84vw; }
     .street { height: 90vh; }
     .club { grid-template-columns: 1fr; }
-    .community__grid { gap: 4px; }
     .footer__top { grid-template-columns: 1fr 1fr; gap: 36px 20px; }
     .footer__mid { flex-direction: column; align-items: flex-start; }
   }
@@ -385,8 +358,6 @@
       <li><a href="#cats" data-img="photo-1591879468972-68d53647238c" data-cap="Uomo — Tutto il guardaroba">Uomo <sup>02</sup></a></li>
       <li><a href="#campaign" data-img="photo-1592919505780-303950717480" data-cap="Collezione 01 — Country Club">Collezioni <sup>03</sup></a></li>
       <li><a href="#club" data-img="photo-1681741099751-cb27e0ab97a1" data-cap="Il Club — Membri dal 2023">Il Club <sup>04</sup></a></li>
-      <li><a href="#atelier" data-img="photo-1618866903271-595806e0679d" data-cap="La Sartoria — Cucito in Italia">La Sartoria <sup>05</sup></a></li>
-      <li><a href="#community" data-img="photo-1682717188036-83bc63ccccc7" data-cap="Journal — Storie dal green">Journal <sup>06</sup></a></li>
     </ul>
     <div class="menu__foot">
       <div><span class="caps">Assistenza</span><a href="#" class="link-line">Spedizioni e resi</a><a href="#" class="link-line">Guida alle taglie</a><a href="#" class="link-line">Contatti</a></div>
@@ -436,7 +407,7 @@
     <div class="caps">(Il manifesto)</div>
     <p class="manifesto__text" id="manifesto">Nati sui green dei vecchi club <span class="pill"><img src="https://images.unsplash.com/photo-1662692990252-c578c3a430b7?w=200&q=70" alt=""></span> e cresciuti per strada. Gedai è <em>sartoria italiana</em> con l'anima sportswear <span class="pill"><img src="https://images.unsplash.com/photo-1517257225266-3c82af13eae9?w=200&q=70" alt=""></span> — pochi capi, fatti bene, in cotone italiano. Non un marchio: <em>un club.</em></p>
     <div class="manifesto__foot">
-      <a href="#atelier" class="btn btn--dark">La nostra storia</a>
+      <a href="#arrivals" class="btn btn--dark">Scopri i capi</a>
       <span class="caps">Est. 2023 — Italia</span>
     </div>
   </section>
@@ -489,38 +460,6 @@
     </div>
   </section>
 
-  <!-- LA SARTORIA -->
-  <section class="atelier" id="atelier">
-    <div class="atelier__sticky" aria-hidden="true">
-      <img class="is-on" src="https://images.unsplash.com/photo-1615799998603-7c6270a45196?w=1600&q=80" alt="" loading="lazy">
-      <img src="https://images.unsplash.com/photo-1618866903271-595806e0679d?w=1600&q=80" alt="" loading="lazy">
-      <img src="https://images.unsplash.com/photo-1779910603439-78b5cb44e318?w=1600&q=80" alt="" loading="lazy">
-    </div>
-    <div class="atelier__steps">
-      <article class="step" data-step="0">
-        <img class="step__img" src="https://images.unsplash.com/photo-1615799998603-7c6270a45196?w=1000&q=80" alt="Trama di cotone" loading="lazy">
-        <div class="caps">La sartoria — Il cotone</div>
-        <div class="step__no">01</div>
-        <h3>Solo cotone <em>italiano.</em></h3>
-        <p>Scegliamo filati coltivati e lavorati in Italia: più morbidi, più resistenti, fatti per durare anni e non una stagione.</p>
-      </article>
-      <article class="step" data-step="1">
-        <img class="step__img" src="https://images.unsplash.com/photo-1618866903271-595806e0679d?w=1000&q=80" alt="Giacca sartoriale su una macchina da cucire" loading="lazy">
-        <div class="caps">La sartoria — Il taglio</div>
-        <div class="step__no">02</div>
-        <h3>Tagliato <em>a mano.</em></h3>
-        <p>Ogni pezzo nasce su un banco da taglio, come una giacca su misura. Vestibilità precise, proporzioni studiate.</p>
-      </article>
-      <article class="step" data-step="2">
-        <img class="step__img" src="https://images.unsplash.com/photo-1779910603439-78b5cb44e318?w=1000&q=80" alt="Sarto al lavoro" loading="lazy">
-        <div class="caps">La sartoria — La firma</div>
-        <div class="step__no">03</div>
-        <h3>Numerato, <em>uno a uno.</em></h3>
-        <p>Ogni drop è un'edizione limitata. Il tuo capo porta il suo numero: non ce n'è un altro uguale.</p>
-      </article>
-    </div>
-  </section>
-
   <!-- STREETWEAR -->
   <section class="street">
     <img id="streetImg" src="https://images.unsplash.com/photo-1559697242-a465f2578a95?w=2200&q=80" alt="Due ragazzi in streetwear sotto il cielo" loading="lazy">
@@ -550,21 +489,6 @@
     </form>
   </section>
 
-  <!-- COMMUNITY -->
-  <section class="community" id="community">
-    <div class="section-head">
-      <div><div class="caps">@gedai.club</div><h2>I membri del <em>Club</em></h2></div>
-      <a href="#" class="caps link-line">Seguici su Instagram</a>
-    </div>
-    <div class="community__grid">
-      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1591491672853-2210e08a15f5?w=600&q=75" alt="" loading="lazy"></a>
-      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1759365485726-cfe4166bbfe7?w=600&q=75" alt="" loading="lazy"></a>
-      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1591879468972-68d53647238c?w=600&q=75" alt="" loading="lazy"></a>
-      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1592459844445-567c2c9b7a2e?w=600&q=75" alt="" loading="lazy"></a>
-      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1788500304857-256ab412295c?w=600&q=75" alt="" loading="lazy"></a>
-      <a href="#" data-cursor="Vedi"><img src="https://images.unsplash.com/photo-1592937238247-cd0090e02f65?w=600&q=75" alt="" loading="lazy"></a>
-    </div>
-  </section>
 </main>
 
 <footer class="footer">
@@ -574,7 +498,7 @@
       <div class="field"><input type="email" placeholder="La tua email" aria-label="La tua email"><button class="caps">Iscriviti →</button></div>
     </div>
     <div class="footer__col"><h4 class="caps">Shop</h4><ul><li><a class="link-line" href="#">Nuovi arrivi</a></li><li><a class="link-line" href="#">Polo</a></li><li><a class="link-line" href="#">Maglieria</a></li><li><a class="link-line" href="#">Capispalla</a></li><li><a class="link-line" href="#">Accessori</a></li><li><a class="link-line" href="#">Gift card</a></li></ul></div>
-    <div class="footer__col"><h4 class="caps">Il Club</h4><ul><li><a class="link-line" href="#">Manifesto</a></li><li><a class="link-line" href="#">La Sartoria</a></li><li><a class="link-line" href="#">Journal</a></li><li><a class="link-line" href="#">Membership</a></li><li><a class="link-line" href="#">Eventi</a></li></ul></div>
+    <div class="footer__col"><h4 class="caps">Il Club</h4><ul><li><a class="link-line" href="#">Manifesto</a></li><li><a class="link-line" href="#">Membership</a></li><li><a class="link-line" href="#">Eventi</a></li></ul></div>
     <div class="footer__col"><h4 class="caps">Assistenza</h4><ul><li><a class="link-line" href="#">Spedizioni</a></li><li><a class="link-line" href="#">Resi e cambi</a></li><li><a class="link-line" href="#">Guida alle taglie</a></li><li><a class="link-line" href="#">Cura dei capi</a></li><li><a class="link-line" href="#">FAQ</a></li><li><a class="link-line" href="#">Contatti</a></li></ul></div>
     <div class="footer__col"><h4 class="caps">Azienda</h4><ul><li><a class="link-line" href="#">Chi siamo</a></li><li><a class="link-line" href="#">Stampa</a></li><li><a class="link-line" href="#">Lavora con noi</a></li><li><a class="link-line" href="#">Rivenditori</a></li></ul></div>
   </div>
@@ -746,7 +670,7 @@
 
   if (!reduce) {
     /* ---------- Titoli che salgono riga per riga ---------- */
-    document.querySelectorAll('.section-head h2, .campaign__intro h2, .street h2, .club h2, .step h3, .footer__news h3').forEach(el => {
+    document.querySelectorAll('.section-head h2, .campaign__intro h2, .street h2, .club h2, .footer__news h3').forEach(el => {
       SplitText.create(el, { type: 'lines', mask: 'lines', autoSplit: true, onSplit: (s) => gsap.from(s.lines, { yPercent: 110, duration: 1.2, stagger: .08, ease: EASE, scrollTrigger: { trigger: el, start: 'top 88%' } }) });
     });
 
@@ -755,7 +679,7 @@
     gsap.fromTo(man.words, { opacity: .14 }, { opacity: 1, stagger: .1, ease: 'none', scrollTrigger: { trigger: '#manifesto', start: 'top 80%', end: 'bottom 45%', scrub: true } });
 
     /* ---------- Foto che si svelano ---------- */
-    gsap.utils.toArray('.cat, .community__grid a').forEach((el, i) => {
+    gsap.utils.toArray('.cat').forEach((el, i) => {
       const st = { trigger: el, start: 'top 92%' };
       gsap.fromTo(el, { clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0% 0 0 0)', duration: 1.4, ease: 'expo.inOut', delay: (i % 4) * .08, scrollTrigger: st });
       gsap.fromTo(el.querySelector('img'), { scale: 1.3 }, { scale: 1, duration: 1.8, ease: EASE, delay: (i % 4) * .08, scrollTrigger: st, clearProps: 'transform' });
@@ -774,9 +698,6 @@
       ct.querySelectorAll('.shot img').forEach(img => gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: img.closest('.shot'), containerAnimation: tween, start: 'left right', end: 'right left', scrub: true } }));
     });
 
-    /* ---------- Sartoria: la foto fissa cambia a ogni capitolo ---------- */
-    const stickyImgs = document.querySelectorAll('.atelier__sticky img');
-    document.querySelectorAll('.step').forEach(s => ScrollTrigger.create({ trigger: s, start: 'top 55%', end: 'bottom 55%', onToggle: (st) => st.isActive && stickyImgs.forEach((im, j) => im.classList.toggle('is-on', j === +s.dataset.step)) }));
   }
 
   /* ---------- Cursore personalizzato (solo mouse) ---------- */
